@@ -1,0 +1,214 @@
+//Loading Screen
+$(window).on("load", function () {
+    $(".loader-wrapper").fadeOut("slow");
+});
+
+//Error Message Block
+$(function () {
+    setTimeout(function () {
+        $(".fade-message").slideUp();
+    }, 1500);
+});
+
+//Date Picker
+//Date Joined - (Admin)
+$(function () {
+    $("#date_joined").datepicker({
+        maxDate: "+0D",
+        dateFormat: "dd/mm/yy",
+        showAnim: "drop",
+        changeMonth: true,
+        changeYear: true,
+    });
+});
+
+// Holiday Date - (Admin)
+$(function () {
+    $("#holiday_date").datepicker({
+        dateFormat: "yy-mm-dd",
+        showAnim: "drop",
+        changeMonth: true,
+        changeYear: true,
+    });
+});
+
+//Apply Leave DatePicker - From & To - (Employees)
+$(function () {
+    //Disable Weekends & Holidays
+    function setHoliDays(date) {
+        var holidays = jsbinder.holidays;
+        var day = date.getDay();
+
+        if (day == 0 || day == 6) {
+            return [false, "weekends"];
+        }
+
+        for (i = 0; i < holidays.length; i++) {
+            var holiday = new Date(Date.parse(holidays[i]));
+
+            var holidaydate = holiday.getDate();
+            var holidaymonth = holiday.getMonth();
+            var holidayyear = holiday.getFullYear();
+
+            if (
+                date.getFullYear() == holidayyear &&
+                date.getMonth() == holidaymonth &&
+                date.getDate() == holidaydate
+            ) {
+                return [false, "holidays"];
+            }
+        }
+        return [true, ""];
+    }
+
+    //From
+    $("#from").datepicker({
+        dateFormat: "dd/mm/yy",
+        showOnFocus: false,
+        beforeShowDay: setHoliDays,
+        pickerClass: "noPrevNext",
+        defaultDate: "+1D",
+        changeMonth: true,
+        numberOfMonths: 2,
+        showAnim: "drop",
+        showOtherMonths: true,
+        minDate: "+1D",
+        maxDate: "+1Y",
+        onSelect: function (dateStr) {
+            var min = $(this).datepicker("getDate");
+            $("#to").datepicker("option", "minDate", min || "0");
+            datepicked();
+        },
+    });
+
+    //To
+    $("#to").datepicker({
+        dateFormat: "dd/mm/yy",
+        showOnFocus: false,
+        beforeShowDay: setHoliDays,
+        pickerClass: "noPrevNext",
+        numberOfMonths: 2,
+        changeMonth: true,
+        defaultDate: "+1D",
+        showAnim: "drop",
+        showOtherMonths: true,
+        minDate: "0",
+        maxDate: "+1Y",
+        onSelect: function (dateStr) {
+            var max = $(this).datepicker("getDate");
+            $("#from").datepicker("option", "maxDate", max || "+1Y");
+            datepicked();
+        },
+    });
+});
+
+// Leave Application Logic
+var datepicked = function () {
+    var from = $("#from");
+    var to = $("#to");
+    var days_taken = $("#days_taken");
+
+    var startDate = from.datepicker("getDate");
+    var endDate = to.datepicker("getDate");
+
+    // Validate input
+    if (endDate && startDate) {
+        // Calculate days between dates
+        var millisecondsPerDay = 86400 * 1000; // Day in milliseconds
+        startDate.setHours(0, 0, 0, 1); // Start just after midnight
+        endDate.setHours(23, 59, 59, 999); // End just before midnight
+        var diff = endDate - startDate; // Milliseconds between datetime objects
+        var days = Math.ceil(diff / millisecondsPerDay);
+
+        // Subtract two weekend days for every week in between
+        var weeks = Math.floor(days / 7);
+        var days = days - weeks * 2;
+
+        // Handle special cases
+        var startDay = startDate.getDay();
+        var endDay = endDate.getDay();
+
+        // Remove weekend not previously removed.
+        if (startDay - endDay > 1) var days = days - 2;
+
+        // Remove start day if span starts on Sunday but ends before Saturday
+        if (startDay == 0 && endDay != 6) var days = days - 1;
+
+        // Remove end day if span ends on Saturday but starts after Sunday
+        if (endDay == 6 && startDay != 0) var days = days - 1;
+
+        //Holidays Check
+        var holidays = jsbinder.holidays;
+        var d1 = new Date(Date.parse(startDate));
+        var d2 = new Date(Date.parse(endDate));
+        var total_holidays = 0;
+
+        for (i = 0; i < holidays.length; i++) {
+            var d3 = new Date(Date.parse(holidays[i]));
+
+            if (d3.getTime() <= d2.getTime() && d3.getTime() >= d1.getTime()) {
+                total_holidays++;
+            }
+        }
+
+        days = days - total_holidays;
+
+        if (days == 1) {
+            $("#half_day").prop("disabled", false);
+        } else {
+            $("#half_day").prop("disabled", true);
+        }
+
+        days_taken.val(days);
+    }
+};
+
+//Phone Number
+$(window).load(function () {
+    var phones = [{ mask: "+(60)## ###-####" }, { mask: "+(60)## ###-#####" }];
+    $("#phoneNum").inputmask({
+        mask: phones,
+        greedy: false,
+        definitions: { "#": { validator: "[0-9]", cardinality: 1 } },
+    });
+});
+
+//IC Number
+$(window).load(function () {
+    var icNum = [{ mask: "######-##-####" }];
+    $("#ic").inputmask({
+        mask: icNum,
+        greedy: false,
+        definitions: { "#": { validator: "[0-9]", cardinality: 1 } },
+    });
+});
+
+//Live Clock
+function startTime() {
+    var today = new Date();
+
+    var date = today.toDateString();
+    var h = today.getHours();
+    var m = today.getMinutes();
+    var s = today.getSeconds();
+    m = checkTime(m);
+    s = checkTime(s);
+    document.getElementById("clock").innerHTML = h + ":" + m + ":" + s;
+
+    document.getElementById("date").innerHTML = date;
+
+    var t = setTimeout(startTime, 500);
+}
+function checkTime(i) {
+    if (i < 10) {
+        i = "0" + i;
+    } // add zero in front of numbers < 10
+    return i;
+}
+
+//Tables
+$(function () {
+    $("table.container").on("click", "tr.table-tr", function () {
+        window.location = $(this).data("url");
+    });
+});
