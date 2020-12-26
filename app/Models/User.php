@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Contracts\Auth\CanResetPassword;
 
 class User extends Authenticatable
 {
@@ -41,8 +42,8 @@ class User extends Authenticatable
     public function refRole()
     {
         return $this->belongsTo('App\Models\RefRole', 'role_id', 'id');
-    }    
-    
+    }
+
     public function refEmpStatus()
     {
         return $this->belongsTo('App\Models\RefEmpStatus', 'emp_status_id', 'id');

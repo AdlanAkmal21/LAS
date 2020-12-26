@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-Use DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class LeaveTableSeeder extends Seeder
 {
@@ -15,8 +15,8 @@ class LeaveTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('leave_details')->truncate(); 
-        DB::table('leave_details')->insert([
+        FacadesDB::table('leave_details')->truncate();
+        FacadesDB::table('leave_details')->insert([
             [   //Nurul Jannah Binti Muhamad Ali
                 'user_id' => 2,
                 'annual_e' => 14,

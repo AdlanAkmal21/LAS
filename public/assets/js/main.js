@@ -3,13 +3,6 @@ $(window).on("load", function () {
     $(".loader-wrapper").fadeOut("slow");
 });
 
-//Error Message Block
-$(function () {
-    setTimeout(function () {
-        $(".fade-message").slideUp();
-    }, 1500);
-});
-
 //Date Picker
 //Date Joined - (Admin)
 $(function () {
@@ -163,26 +156,6 @@ var datepicked = function () {
     }
 };
 
-//Phone Number
-$(window).load(function () {
-    var phones = [{ mask: "+(60)## ###-####" }, { mask: "+(60)## ###-#####" }];
-    $("#phoneNum").inputmask({
-        mask: phones,
-        greedy: false,
-        definitions: { "#": { validator: "[0-9]", cardinality: 1 } },
-    });
-});
-
-//IC Number
-$(window).load(function () {
-    var icNum = [{ mask: "######-##-####" }];
-    $("#ic").inputmask({
-        mask: icNum,
-        greedy: false,
-        definitions: { "#": { validator: "[0-9]", cardinality: 1 } },
-    });
-});
-
 //Live Clock
 function startTime() {
     var today = new Date();
@@ -193,9 +166,9 @@ function startTime() {
     var s = today.getSeconds();
     m = checkTime(m);
     s = checkTime(s);
-    document.getElementById("clock").innerHTML = h + ":" + m + ":" + s;
 
-    document.getElementById("date").innerHTML = date;
+    $("#clock").html(h + ":" + m + ":" + s);
+    $("#date").html(date);
 
     var t = setTimeout(startTime, 500);
 }
@@ -211,4 +184,14 @@ $(function () {
     $("table.container").on("click", "tr.table-tr", function () {
         window.location = $(this).data("url");
     });
+});
+
+//Phone Mask
+$(function () {
+    $("#phoneNum").inputmask();
+});
+
+//IC Mask
+$(function () {
+    $("#ic").inputmask();
 });

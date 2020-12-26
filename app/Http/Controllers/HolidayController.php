@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Carbon\Carbon;
+use App\Http\Requests\HolidayPostRequest;
 use App\Models\Holiday;
 
 class HolidayController extends Controller
@@ -15,11 +14,11 @@ class HolidayController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {             
-        $holidays       = Holiday::simplePaginate(5);
+    {
+        $holidays       = Holiday::paginate(10);
         $holidays_count = $holidays->count();
-        
-        return view('holiday.holidayList', compact('holidays', 'holidays_count'));
+
+        return view('holiday.holiday_list', compact('holidays', 'holidays_count'));
     }
 
     /**
@@ -29,7 +28,7 @@ class HolidayController extends Controller
      */
     public function create()
     {
-        return view('holiday.holidayAdd');
+        return view('holiday.holiday_add');
     }
 
     /**
@@ -38,17 +37,12 @@ class HolidayController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(HolidayPostRequest $request)
     {
-        $request->validate([
-            'holiday_name'   => ['required', 'string', 'max:255'],
-            'holiday_date'   => ['required', 'date'],
-        ]);
-
         $holiday                = new Holiday();
         $holiday->holiday_name  = $request->get('holiday_name');
         $holiday->holiday_date  = $request->get('holiday_date');
-        
+
         $holiday->save();
 
         return redirect('/admin/holidayadd')->with('success' , 'Holiday added.');
@@ -75,7 +69,7 @@ class HolidayController extends Controller
     {
         $holiday        = Holiday::find($id);
 
-        return view('holiday.holidayEdit' , compact('holiday'));
+        return view('holiday.holiday_edit' , compact('holiday'));
     }
 
     /**
@@ -85,17 +79,12 @@ class HolidayController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(HolidayPostRequest $request, $id)
     {
-        $request->validate([
-            'holiday_name'   => ['required', 'string', 'max:255'],
-            'holiday_date'   => ['required', 'date'],
-        ]);
-
         $holiday                = Holiday::find($id);
         $holiday->holiday_name  = $request->get('holiday_name');
         $holiday->holiday_date  = $request->get('holiday_date');
-        
+
         $holiday->save();
 
         return redirect('/admin/holidaylist')->with('success', 'Holiday Updated.');

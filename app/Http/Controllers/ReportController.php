@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
-use Carbon\Carbon;
-use JavaScript;
-
+use Laracasts\Utilities\JavaScript\JavaScriptFacade;
 use App\Traits\LeaveTrait;
 use App\Models\User;
-
 
 class ReportController extends Controller
 {
@@ -21,7 +16,7 @@ class ReportController extends Controller
         $array = $this->dashboardAdmins();
 
         //Employee
-        $employees_count                = $array['employees_count'];   
+        $employees_count                = $array['employees_count'];
         $male_count                     = $array['male_count'];
         $female_count                   = $array['female_count'];
         $admin_count                    = $array['admin_count'];
@@ -41,7 +36,8 @@ class ReportController extends Controller
         //Application
         $applications_count             = $array['applications_count'];
         $applications_this_year_count   = $array['applications_this_year_count'];
-        
+        $applications_other_year_count  = $applications_count - $applications_this_year_count;
+
         $pending_count                  = $array['pending_count'];
         $approve_count                  = $array['approve_count'];
         $reject_count                   = $array['reject_count'];
@@ -49,11 +45,34 @@ class ReportController extends Controller
         $approve_this_year_count        = $array['approve_this_year_count'];
         $reject_this_year_count         = $array['reject_this_year_count'];
 
-        
-        //Holiday
-        $holidays_count                 = $array['holidays_count'];                
 
-        JavaScript::put([
+        //Holiday
+        $holidays_count                 = $array['holidays_count'];
+        $monday_count                   = $array['monday_count'];
+        $tuesday_count                  = $array['tuesday_count'];
+        $wednesday_count                = $array['wednesday_count'];
+        $thursday_count                 = $array['thursday_count'];
+        $friday_count                   = $array['friday_count'];
+        $saturday_count                 = $array['saturday_count'];
+        $sunday_count                   = $array['sunday_count'];
+
+        $january_count                  = $array['january_count'];
+        $february_count                 = $array['february_count'];
+        $march_count                    = $array['march_count'];
+        $april_count                    = $array['april_count'];
+        $may_count                      = $array['may_count'];
+        $june_count                     = $array['june_count'];
+        $july_count                     = $array['july_count'];
+        $august_count                   = $array['august_count'];
+        $september_count                = $array['september_count'];
+        $october_count                  = $array['october_count'];
+        $november_count                 = $array['november_count'];
+        $december_count                 = $array['december_count'];
+
+        $highest_day_value              = $array['highest_day_value'];
+        $highest_month_value            = $array['highest_month_value'];
+
+        JavaScriptFacade::put([
             'male_count'    => $male_count,
             'female_count'  => $female_count,
             'pending_count' =>  $pending_count,
@@ -66,9 +85,31 @@ class ReportController extends Controller
             'resigned_count'  => $resigned_count,
             'applications_count' => $applications_count,
             'applications_this_year_count' => $applications_this_year_count,
+            'applications_other_year_count' => $applications_other_year_count,
+            'monday_count'=> $monday_count,
+            'tuesday_count'=> $tuesday_count,
+            'wednesday_count'=> $wednesday_count,
+            'thursday_count'=> $thursday_count,
+            'friday_count' => $friday_count,
+            'saturday_count'=> $saturday_count,
+            'sunday_count'=> $sunday_count,
+            'january_count' => $january_count,
+            'february_count' => $february_count,
+            'march_count' => $march_count,
+            'april_count' => $april_count,
+            'may_count' => $may_count,
+            'june_count' => $june_count,
+            'july_count' => $july_count,
+            'august_count' => $august_count,
+            'september_count' => $september_count,
+            'october_count' => $october_count,
+            'november_count' => $november_count,
+            'december_count' => $december_count,
+            'highest_day_value' => $highest_day_value,
+            'highest_month_value' => $highest_month_value,
         ]);
 
-        return view('report.overview', compact(
+        return view('report.overview_report', compact(
             'employees_count',
             'male_count',
             'female_count',
@@ -84,6 +125,7 @@ class ReportController extends Controller
             'annual_e_average',
             'applications_count',
             'applications_this_year_count',
+            'applications_other_year_count',
             'pending_count',
             'approve_count',
             'reject_count',
@@ -91,24 +133,42 @@ class ReportController extends Controller
             'approve_this_year_count',
             'reject_this_year_count',
             'holidays_count',
-
+            'monday_count',
+            'tuesday_count',
+            'wednesday_count',
+            'thursday_count',
+            'friday_count',
+            'saturday_count',
+            'sunday_count',
+            'january_count',
+            'february_count',
+            'march_count',
+            'april_count',
+            'may_count',
+            'june_count',
+            'july_count',
+            'august_count',
+            'september_count',
+            'october_count',
+            'november_count',
+            'december_count',
         ));
     }
 
     public function individual()
     {
         $users = User::join('employee_details','employee_details.user_id','=','users.id')
-        ->select('users.*', DB::raw('DATE_FORMAT(employee_details.date_joined, "%d %M, %Y") as date_joined','users.id as userID'))
-        ->where('users.id', '!=' , 1)
-        ->simplePaginate(10);
-        
-        return view('report.individualList', compact('users'));
+                    ->select('users.*', DB::raw('DATE_FORMAT(employee_details.date_joined, "%d %M, %Y") as date_joined','users.id as userID'))
+                    ->where('users.id', '!=' , 1)
+                    ->paginate(10);
+
+        return view('report.individual_list', compact('users'));
     }
 
     public function findindividual($id)
     {
-        $array                 = $this->employeeShow($id); 
-        $array2                = $this->employeeReport($id); 
+        $array                 = $this->employeeShow($id);
+        $array2                = $this->employeeReport($id);
 
         $user                  = $array['user'];
         $leave                 = $array['leave'];
@@ -123,13 +183,13 @@ class ReportController extends Controller
         $applications_days_taken_sum        = $array2['applications_days_taken_sum'];
         $applications_days_taken_avg        = $array2['applications_days_taken_avg'];
 
-        JavaScript::put([
+        JavaScriptFacade::put([
             'individual_pending_count' =>  $pending_count,
             'individual_approve_count' => $approved_count,
             'individual_reject_count'  => $rejected_count,
         ]);
 
-        return view('report.individualReport' , compact(
+        return view('report.individual_report' , compact(
             'user',
             'leave',
             'current_approver_name',

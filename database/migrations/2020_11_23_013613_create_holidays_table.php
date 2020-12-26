@@ -15,9 +15,11 @@ class CreateHolidaysTable extends Migration
     {
         Schema::create('holidays', function (Blueprint $table) {
             $table->id();
-            $table->string('holiday_name');
+            $table->string('holiday_name', 50);
             $table->date('holiday_date');
-            
+            $table->enum('status', ['active', 'inactive'])->default('active');
+            $table->softDeletes();
+
             $table->timestamps();
         });
     }

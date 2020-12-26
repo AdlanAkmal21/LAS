@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+// use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,24 +32,25 @@ class LoginController extends Controller
     // protected $redirectTo = RouteServiceProvider::HOME;
 
     public function redirectTo() {
-      $role = Auth::user()->role_id; 
+      $role = Auth::user()->role_id;
+
       if(!(Auth::user()->emp_status_id == 2)){
-        switch ($role) {
-          case 1:
-            return '/admins';
-            break;
-          case 2:
-            return '/employees';
-            break; 
-          case 3:
-            return '/approvers';
-            break; 
-  
-          default:
-            return '/'; 
-          break;
+            switch ($role) {
+                case 1:
+                    return RouteServiceProvider::ADMIN;
+                    break;
+                case 2:
+                    return RouteServiceProvider::EMPLOYEE;
+                    break;
+                case 3:
+                    return RouteServiceProvider::APPROVER;
+                    break;
+
+                default:
+                    return '/';
+                break;
+            }
         }
-      }
     }
 
     /**

@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-Use DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class EmployeeDetailTableSeeder extends Seeder
 {
@@ -15,19 +15,19 @@ class EmployeeDetailTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('employee_details')->truncate(); 
+        FacadesDB::table('employee_details')->truncate();
 
             //Employees
-            DB::table('employee_details')->insert([
+            FacadesDB::table('employee_details')->insert([
             [ //1 'name' => 'Nurul Jannah Binti Muhamad Ali',
-            'user_id' => 2,
-            'approver_id' =>  23,
-            'ic' =>  '880423-05-5280',
-            'gender_id' => 2,
-            'phoneNum' =>  '+(60)17 692-7966',
-            'date_joined' => Carbon::create('2018','08','01'),
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+                'user_id' => 2,
+                'approver_id' =>  23,
+                'ic' =>  '880423-05-5280',
+                'gender_id' => 2,
+                'phoneNum' =>  '+(60)17 692-7966',
+                'date_joined' => Carbon::create('2018','08','01'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ //2 'name' => 'Abu Bakar Bin Katun',
               'user_id' => 3,
@@ -249,6 +249,6 @@ class EmployeeDetailTableSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ]
-        ]);    
+        ]);
     }
 }

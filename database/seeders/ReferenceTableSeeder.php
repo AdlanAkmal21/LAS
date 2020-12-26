@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-Use DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class ReferenceTableSeeder extends Seeder
 {
@@ -17,8 +17,8 @@ class ReferenceTableSeeder extends Seeder
     public function run() {
 
         //Reference Roles
-        DB::table('ref_roles')->truncate(); 
-        DB::table('ref_roles')->insert([
+        FacadesDB::table('ref_roles')->truncate();
+        FacadesDB::table('ref_roles')->insert([
           ['id' => 1,
           'role_name' => 'Admin',
           'created_at' => Carbon::now(),
@@ -37,8 +37,8 @@ class ReferenceTableSeeder extends Seeder
         ]);
 
         //Reference Employee Status
-        DB::table('ref_emp_statuses')->truncate(); 
-        DB::table('ref_emp_statuses')->insert([
+        FacadesDB::table('ref_emp_statuses')->truncate();
+        FacadesDB::table('ref_emp_statuses')->insert([
           ['id' => 1,
           'emp_status_name' => 'Working',
           'created_at' => Carbon::now(),
@@ -62,8 +62,8 @@ class ReferenceTableSeeder extends Seeder
         ]);
 
         //Reference Application Status
-        DB::table('ref_application_statuses')->truncate(); 
-        DB::table('ref_application_statuses')->insert([
+        FacadesDB::table('ref_application_statuses')->truncate();
+        FacadesDB::table('ref_application_statuses')->insert([
           ['id' => 1,
           'application_status_name' => 'Pending',
           'created_at' => Carbon::now(),
@@ -82,8 +82,8 @@ class ReferenceTableSeeder extends Seeder
         ]);
 
         //Reference Leave Types
-        DB::table('ref_leave_types')->truncate(); 
-        DB::table('ref_leave_types')->insert([
+        FacadesDB::table('ref_leave_types')->truncate();
+        FacadesDB::table('ref_leave_types')->insert([
           ['id' => 1,
           'leave_type_name' => 'Annual Leave',
           'created_at' => Carbon::now(),
@@ -107,8 +107,8 @@ class ReferenceTableSeeder extends Seeder
         ]);
 
         //Reference Gender
-        DB::table('ref_genders')->truncate(); 
-        DB::table('ref_genders')->insert([
+        FacadesDB::table('ref_genders')->truncate();
+        FacadesDB::table('ref_genders')->insert([
           ['id' => 1,
           'gender_name' => 'Male',
           'created_at' => Carbon::now(),

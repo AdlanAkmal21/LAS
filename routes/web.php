@@ -1,7 +1,15 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\HolidayController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,52 +22,66 @@ use App\Http\Controllers\ReportController;
 |
 */
 //Default
-Route::get('/', function () { return view('auth.login'); });
+Route::get('/', function () {
+return redirect('/login');
+});
 
 //Authentications
 Auth::routes();
 
 //Resources
-Route::resource('admins', 'App\Http\Controllers\AdminController')->middleware('role:1');
-Route::resource('employees', 'App\Http\Controllers\EmployeeController')->middleware('role:2');
-Route::resource('approvers', 'App\Http\Controllers\ApproverController')->middleware('role:3');
-Route::resource('applications', 'App\Http\Controllers\ApplicationController');
-Route::resource('holidays', 'App\Http\Controllers\HolidayController');
+Route::resource('admins', AdminController::class)->middleware('role:1');
+Route::resource('users', UserController::class);
+Route::resource('applications', ApplicationController::class );
+Route::resource('holidays', HolidayController::class );
 
-//Holiday
+//Indexes
+Route::get('/employee/dashboard', [UserController::class, 'index'])->middleware('role:2');
+Route::get('/approver/dashboard', [UserController::class, 'index'])->middleware('role:3');
+
 
 //Applications
-Route::get('application/apply', 'App\Http\Controllers\ApplicationController@create')->name('applications.create');
-Route::get('application/adminshow/{id}','App\Http\Controllers\ApplicationController@adminAppShow')->name('applications.adminAppShow');
-Route::get('application/list','App\Http\Controllers\ApplicationController@list')->name('applications.list');
-Route::get('application/delete/{id}','App\Http\Controllers\ApplicationController@destroy')->name('applications.destroy');
+Route::get('application/apply', [ApplicationController::class, 'create'])->name('applications.create');
+Route::get('application/adminshow/{id}', [ApplicationController::class, 'adminAppShow'])->name('applications.adminAppShow');
+Route::get('application/list', [ApplicationController::class, 'list'])->name('applications.list');
+Route::get('application/delete/{id}', [ApplicationController::class,'destroy'])->name('applications.destroy');
 
 
 //Admins
-Route::get('admin/holidayadd','App\Http\Controllers\HolidayController@create')->name('holidays.create');
-Route::get('admin/holidaylist','App\Http\Controllers\HolidayController@index')->name('holidays.index');
-Route::get('admin/holidayedit/{id}','App\Http\Controllers\HolidayController@edit')->name('holidays.edit');
-Route::get('admin/holidaylist/delete/{id}','App\Http\Controllers\HolidayController@destroy')->name('holidays.destroy');
-Route::get('report/overview', 'App\Http\Controllers\ReportController@overview')->name('report.overview');
-Route::get('report/individual', 'App\Http\Controllers\ReportController@individual')->name('report.individual');
-Route::get('report/individual/{id}', 'App\Http\Controllers\ReportController@findindividual')->name('report.findindividual');
+Route::get('admin/holidayadd', [HolidayController::class, 'create'])->name('holidays.create');
+Route::get('admin/holidaylist', [HolidayController::class, 'index'])->name('holidays.index');
+Route::get('admin/holidayedit/{id}', [HolidayController::class, 'edit'])->name('holidays.edit');
+Route::get('admin/holidaylist/delete/{id}', [HolidayController::class,'destroy'])->name('holidays.destroy');
+
+Route::get('report/overview', [ReportController::class, 'overview'])->name('report.overview');
+Route::get('report/individual', [ReportController::class, 'individual'])->name('report.individual');
+Route::get('report/individual/{id}', [ReportController::class, 'findindividual'])->name('report.findindividual');
+
+Route::get('admin/employeeadd', [AdminController::class, 'employeeadd'])->name('admins.employeeadd');
+Route::get('admin/employeelist',[AdminController::class, 'employeelist'])->name('admins.employeelist');
+Route::get('admin/employeeshow/{id}',[AdminController::class, 'show'])->name('admins.empshow');
+Route::get('admin/employeelist/delete/{id}',[AdminController::class, 'destroy'])->name('admins.delete');
+Route::get('admin/employeeedit/{id}',[AdminController::class, 'edit'])->name('admins.empedit');
+Route::post('admin/employeeedit/{id}',[AdminController::class, 'update'])->name('admins.update');
+
+Route::get('admin/applicationlist',[AdminController::class, 'applicationlist'])->name('admins.applicationlist');
+
+//Employees & Approvers
+Route::get('approver/pendinglist/{id}',[UserController::class, 'pendinglist'])->name('users.pendinglist');
+Route::get('approver/applicantlist/{id}', [UserController::class, 'applicantlist'])->name('users.applicantlist');
+Route::get('approver/approve/{id}', [UserController::class, 'approve'])->name('users.approve');
+Route::get('approver/reject/{id}', [UserController::class, 'reject'])->name('users.reject');
+Route::get('employee/employeedetail/{id}', [UserController::class ,'show'])->name('users.show');
+
+//Change Password
+Route::view('change-password', 'auth.passwords.change')->name('change_page');
+Route::post('change-password', [UserController::class , 'change'])->name('users.change_password');
+
+//Forgot Password
+Route::get('forgot-password', [ForgotPasswordController::class , 'getEmail']);
+Route::post('forgot-password', [ForgotPasswordController::class , 'postEmail'])->name('forgot.postEmail');
+
+Route::get('forgot-reset-password/{token}', [ForgotPasswordController::class , 'reset_page']);
+Route::post('forgot-reset-password', [ForgotPasswordController::class , 'reset'])->name('forgot.reset');
 
 
-Route::get('admin/employeeadd','App\Http\Controllers\AdminController@employeeadd')->name('admins.employeeadd');
-Route::get('admin/employeelist','App\Http\Controllers\AdminController@employeelist')->name('admins.employeelist');
-Route::get('admin/applicationlist','App\Http\Controllers\AdminController@applicationlist')->name('admins.applicationlist');
-Route::get('admin/employeelist/delete/{id}','App\Http\Controllers\AdminController@destroy')->name('admins.delete');
-
-//Approvers
-Route::get('approver/approverlist/{id}','App\Http\Controllers\ApproverController@approverlist')->name('approvers.approverlist');
-Route::get('approver/applicantlist/{id}','App\Http\Controllers\ApproverController@applicantlist')->name('approvers.applicantlist');
-Route::get('approver/approve/{id}', 'App\Http\Controllers\ApproverController@approve')->name('approvers.approve');
-Route::get('approver/reject/{id}', 'App\Http\Controllers\ApproverController@reject')->name('approvers.reject');
-
-//Employees
-Route::get('employee/employeedetail/{id}', 'App\Http\Controllers\EmployeeController@show')->name('employees.show');
-
-//Password Reset
-Route::get('reset/{id}', function () {return view('employee.reset');})->name('resetPage');
-Route::get('approver/reset/{id}','App\Http\Controllers\ApproverController@reset')->name('approvers.reset');
-Route::get('employee/reset/{id}','App\Http\Controllers\EmployeeController@reset')->name('employees.reset');

@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-Use DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB as FacadesDB;
 
 class EmployeeTableSeeder extends Seeder
 {
@@ -16,10 +16,10 @@ class EmployeeTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->truncate(); 
+        FacadesDB::table('users')->truncate();
 
         //Admin
-        DB::table('users')->insert([
+        FacadesDB::table('users')->insert([
           'id' => 1,
           'name' => 'Admin',
           'email' => 'admin@igsprotech.com.my',
@@ -31,16 +31,16 @@ class EmployeeTableSeeder extends Seeder
         ]);
 
             //Employees
-            DB::table('users')->insert([
+            FacadesDB::table('users')->insert([
             [ //1
-            'id' => 2,
-            'name' => 'Nurul Jannah Binti Muhamad Ali',
-            'email' => 'jannah@igsprotech.com.my',
-            'password' => Hash::make('igsprotech2020'),
-            'role_id' => 2,
-            'emp_status_id' => 1,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+                'id' => 2,
+                'name' => 'Nurul Jannah Binti Muhamad Ali',
+                'email' => 'jannah@igsprotech.com.my',
+                'password' => Hash::make('igsprotech2020'),
+                'role_id' => 2,
+                'emp_status_id' => 1,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ //2
               'id' => 3,
