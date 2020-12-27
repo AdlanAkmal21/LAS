@@ -38,7 +38,7 @@ class ChangePasswordPostRequest extends FormRequest
             'new_password.required'             => 'Please enter new password!',
             'new_password.min'                  => 'New password must be at least 6 characters!',
             'new_confirm_password.required'     => 'Please confirm your password!',
-            'new_confirm_password.same'         => 'Please re-confirm your password!',
+            'new_confirm_password.same'         => 'Not a match! Please re-confirm your password!',
        ];
     }
 }

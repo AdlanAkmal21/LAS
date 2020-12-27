@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ChangePasswordPostRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 
 use Carbon\Carbon;
 
@@ -13,7 +10,6 @@ use App\Models\User;
 use App\Models\LeaveDetail;
 use App\Models\LeaveApplication;
 use App\Traits\LeaveTrait;
-use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -138,15 +134,6 @@ class UserController extends Controller
         $application->save();
 
         return redirect(url()->previous())->with('error', 'Application rejected.');
-    }
-
-    public function change(ChangePasswordPostRequest $request)
-    {
-        $user = User::find(Auth::id());
-        $user->password = Hash::make($request->new_password);
-        $user->save();
-
-        return redirect('/change-password')->with('success', 'Password changed.');
     }
 
 }

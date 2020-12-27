@@ -74,8 +74,9 @@ Route::get('approver/reject/{id}', [UserController::class, 'reject'])->name('use
 Route::get('employee/employeedetail/{id}', [UserController::class ,'show'])->name('users.show');
 
 //Change Password
-Route::view('change-password', 'auth.passwords.change')->name('change_page');
-Route::post('change-password', [UserController::class , 'change'])->name('users.change_password');
+
+Route::get('change-password', [ResetPasswordController::class , 'change_page'])->name('change_page');
+Route::post('change-password', [ResetPasswordController::class , 'change'])->name('users.change_password');
 
 //Forgot Password
 Route::get('forgot-password', [ForgotPasswordController::class , 'getEmail']);
