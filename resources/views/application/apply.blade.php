@@ -74,7 +74,7 @@
                                     <div class="form-group">
                                         <label class="label" for="days_taken">Days Taken</label>
                                         <input class="form-control" type="text" id="days_taken" name="days_taken"
-                                            readonly="readonly" value="">
+                                            readonly="readonly" value="{{ old('days_taken') }}">
                                     </div>
                                 </div>
                             </div>

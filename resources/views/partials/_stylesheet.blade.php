@@ -16,8 +16,6 @@
 <!-- Custom Style (Main) -->
 <link rel="stylesheet" href="{{asset('assets/css/styles.css')}}">
 
-
-
 <!-- --------------------------------------------------------------------------------------------------------- -->
 <!-- Project Icon (ico) -->
 <link rel="apple-touch-icon" sizes="180x180" href="{{asset('assets/ico/apple-touch-icon.png')}}">
