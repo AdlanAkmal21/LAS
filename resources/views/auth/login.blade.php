@@ -34,12 +34,12 @@
                                         @csrf
                                         <div class="form-group">
                                             <input id="email" type="email" class="form-control" name="email"
-                                                value="{{ old('email') }}" required autocomplete="email" autofocus>
+                                                value="{{ old('email') }}" required placeholder="Enter Email...">
 
                                         </div>
                                         <div class="form-group">
                                             <input id="password" type="password" class="form-control" name="password"
-                                                required autocomplete="current-password">
+                                                required placeholder="Enter Password...">
                                         </div>
 
                                         <button type="submit" class="btn btn-primary btn-user btn-block">

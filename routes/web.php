@@ -67,7 +67,7 @@ Route::post('admin/employeeedit/{id}',[AdminController::class, 'update'])->name(
 Route::get('admin/applicationlist',[AdminController::class, 'applicationlist'])->name('admins.applicationlist');
 
 //Employees & Approvers
-Route::get('approver/pendinglist/{id}',[UserController::class, 'pendinglist'])->name('users.pendinglist');
+Route::get('approver/approverlist/{id}',[UserController::class, 'approverlist'])->name('users.approverlist');
 Route::get('approver/applicantlist/{id}', [UserController::class, 'applicantlist'])->name('users.applicantlist');
 Route::get('approver/approve/{id}', [UserController::class, 'approve'])->name('users.approve');
 Route::get('approver/reject/{id}', [UserController::class, 'reject'])->name('users.reject');
@@ -85,4 +85,6 @@ Route::post('forgot-password', [ForgotPasswordController::class , 'postEmail'])-
 Route::get('forgot-reset-password/{token}', [ForgotPasswordController::class , 'reset_page']);
 Route::post('forgot-reset-password', [ForgotPasswordController::class , 'reset'])->name('forgot.reset');
 
-
+//Mail Controller
+Route::post('apply-mail', [MailController::class , 'postApply'])->name('mail.postApply');
+Route::post('approval-mail', [MailController::class , 'postApproval'])->name('mail.postApproval');

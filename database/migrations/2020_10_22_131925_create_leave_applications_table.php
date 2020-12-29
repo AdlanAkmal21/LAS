@@ -24,7 +24,7 @@ class CreateLeaveApplicationsTable extends Migration
             $table->integer('half_day')->nullable();
             $table->decimal('days_taken', 3, 1);
             $table->string('reason', 100)->nullable();
-            $table->date('approval_date')->nullable();
+            $table->dateTime('approval_date')->nullable();
 
             $table->timestamps();
         });

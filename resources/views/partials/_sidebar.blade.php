@@ -124,7 +124,7 @@
         <div id="ApproverManagement" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manage Applicants:</h6>
-                <a class="collapse-item" href="{{ route('users.pendinglist', Auth::id()) }}">Pending List</a>
+                <a class="collapse-item" href="{{ route('users.approverlist', Auth::id()) }}">Approver's List</a>
                 <a class="collapse-item" href="{{ route('users.applicantlist', Auth::id()) }}">Applicants List</a>
             </div>
         </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ApplicationEditRequest;
 use App\Http\Requests\ApplicationPostRequest;
+use App\Mail\NewApplicationMail;
 use Illuminate\Support\Facades\Auth;
 use Laracasts\Utilities\JavaScript\JavaScriptFacade;
 
@@ -16,6 +17,7 @@ use App\Models\Holiday;
 use App\Models\RefLeaveType;
 
 use App\Traits\LeaveTrait;
+use Illuminate\Support\Facades\Mail;
 
 class ApplicationController extends Controller
 {
@@ -121,7 +123,9 @@ class ApplicationController extends Controller
                         $application->application_status_id = 1; //Pending Status
 
                         $application->save();
+                        $application_id = $application->id;
 
+                        Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
                         return redirect('/application/list')->with('success', 'Application submitted.');
                     }
                     else
@@ -138,6 +142,10 @@ class ApplicationController extends Controller
                                 $application->application_status_id = 1; //Pending Status
 
                                 $application->save();
+
+                                $application_id = $application->id;
+
+                                Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
 
                                 return redirect('/application/list')->with('success', 'Application submitted.');
                             }
@@ -159,6 +167,9 @@ class ApplicationController extends Controller
                                 $application->application_status_id = 1; // Pending Status
 
                                 $application->save();
+                                $application_id = $application->id;
+
+                                Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
 
                                 return redirect('/application/list')->with('success', 'Application submitted.');
                             }

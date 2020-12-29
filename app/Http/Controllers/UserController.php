@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ApproverMail;
 use Illuminate\Support\Facades\Auth;
 
 use Carbon\Carbon;
@@ -10,6 +11,7 @@ use App\Models\User;
 use App\Models\LeaveDetail;
 use App\Models\LeaveApplication;
 use App\Traits\LeaveTrait;
+use Illuminate\Support\Facades\Mail;
 
 class UserController extends Controller
 {
@@ -50,17 +52,29 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function pendinglist($id)
+    public function approverlist($id)
     {
         $approver   = User::find($id);
         $pendings   = LeaveApplication::join('users','leave_applications.user_id','=','users.id')
                                         ->join('employee_details','users.id','=','employee_details.user_id')
-                                        ->select('employee_details.*','users.*','leave_applications.*','leave_applications.id as application_id')
+                                        ->select('employee_details.*','users.*','leave_applications.*','leave_applications.id as pending_id')
                                         ->where('employee_details.approver_id', $approver->id)
                                         ->where('application_status_id', 1)
                                         ->paginate(5);
+        $approved   = LeaveApplication::join('users','leave_applications.user_id','=','users.id')
+                                        ->join('employee_details','users.id','=','employee_details.user_id')
+                                        ->select('employee_details.*','users.*','leave_applications.*','leave_applications.id as approved_id')
+                                        ->where('employee_details.approver_id', $approver->id)
+                                        ->where('application_status_id', 2)
+                                        ->paginate(5);
+        $rejected   = LeaveApplication::join('users','leave_applications.user_id','=','users.id')
+                                        ->join('employee_details','users.id','=','employee_details.user_id')
+                                        ->select('employee_details.*','users.*','leave_applications.*','leave_applications.id as rejected_id')
+                                        ->where('employee_details.approver_id', $approver->id)
+                                        ->where('application_status_id', 3)
+                                        ->paginate(5);
 
-        return view('user.pending_list', compact('pendings'));
+        return view('user.approver_list', compact('pendings','approved','rejected'));
     }
 
         /**
@@ -117,6 +131,9 @@ class UserController extends Controller
             $leave->save();
         }
 
+        $application_id_2 = $application->id;
+        Mail::to($application->user->email)->send(new ApproverMail($application_id_2));
+
         return redirect(url()->previous())->with('success', 'Application approved.');
     }
 
@@ -133,6 +150,8 @@ class UserController extends Controller
         $application->approval_date         = Carbon::now();
         $application->save();
 
+        $application_id_2 = $application->id;
+        Mail::to($application->user->email)->send(new ApproverMail($application_id_2));
         return redirect(url()->previous())->with('error', 'Application rejected.');
     }
 
