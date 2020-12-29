@@ -25,6 +25,8 @@ $(function () {
     });
 });
 
+$(function () {});
+
 //Apply Leave DatePicker - From & To - (Employees)
 $(function () {
     //Disable Weekends & Holidays

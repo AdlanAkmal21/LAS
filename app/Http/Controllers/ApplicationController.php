@@ -55,7 +55,7 @@ class ApplicationController extends Controller
 
         $pasts           = LeaveApplication::where('user_id', Auth::id())
                                             ->where('to', '<', Carbon::today())
-                                            ->where('application_status_id','!=',1)
+                                            ->orWhere('application_status_id', 3)
                                             ->paginate(5);
 
         return view('application.application_list' , compact('actives', 'pasts'));
@@ -126,7 +126,7 @@ class ApplicationController extends Controller
                         $application->save();
 
                         $application_id = $application->id;
-                        // Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+                        Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
 
                         $application->user->employee->approver->notify(new NewApplicationAlert($application));
 
@@ -148,7 +148,7 @@ class ApplicationController extends Controller
                                 $application->save();
 
                                 $application_id = $application->id;
-                                // Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+                                Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
 
                                 $application->user->employee->approver->notify(new NewApplicationAlert($application));
 
@@ -175,7 +175,7 @@ class ApplicationController extends Controller
                                 $application->save();
 
                                 $application_id = $application->id;
-                                // Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+                                Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
 
                                 $application->user->employee->approver->notify(new NewApplicationAlert($application));
 

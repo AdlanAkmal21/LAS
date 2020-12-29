@@ -20,8 +20,8 @@
                 </div>
 
                 <h4 class="text-muted font-weight-lighter pt-2">Active Leave Application</h4>
-                <table class="table table-success table-hover container">
-                    <thead>
+                <table class="table table-bordered table-sm container table-responsive-lg">
+                    <thead class="table-success">
                         <tr>
                             <th>#</th>
                             <th>Leave Type</th>
@@ -67,8 +67,8 @@
                 {{ $actives->links() }}
 
                 <h4 class="text-muted font-weight-lighter pt-2">Past Leave Application</h4>
-                <table class="table table-active table-hover container">
-                    <thead>
+                <table class="table table-bordered table-sm container table-responsive-lg">
+                    <thead class="table-secondary">
                         <tr>
                             <th>#</th>
                             <th>Leave Type</th>

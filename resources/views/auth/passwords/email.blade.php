@@ -22,6 +22,8 @@
                     <div class="card-body">
                         @include('partials._validation')
                         @include('partials._notifications')
+
+                        @if (!(Session::has('message')))
                         <form method="POST" action="{{ route('forgot.postEmail') }}">
                             @csrf
 
@@ -43,6 +45,8 @@
                                 </div>
                             </div>
                         </form>
+                        @endif
+
                     </div>
                 </div>
             </div>
