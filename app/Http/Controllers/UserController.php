@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\LeaveDetail;
 use App\Models\LeaveApplication;
+use App\Notifications\ApproverAlert;
 use App\Traits\LeaveTrait;
 use Illuminate\Support\Facades\Mail;
 
@@ -133,6 +134,8 @@ class UserController extends Controller
 
         $application_id_2 = $application->id;
         Mail::to($application->user->email)->send(new ApproverMail($application_id_2));
+        $application->user->notify(new ApproverAlert($application));
+
 
         return redirect(url()->previous())->with('success', 'Application approved.');
     }
@@ -152,7 +155,17 @@ class UserController extends Controller
 
         $application_id_2 = $application->id;
         Mail::to($application->user->email)->send(new ApproverMail($application_id_2));
+        $application->user->notify(new ApproverAlert($application));
+
         return redirect(url()->previous())->with('error', 'Application rejected.');
     }
 
+    public function notifications()
+    {
+       Auth()->user()->unreadNotifications->markAsRead();
+
+       return view('user.notifications',[
+           'notifications' => Auth()->user()->notifications()->paginate(5)
+       ]);
+    }
 }

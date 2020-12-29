@@ -1,23 +1,24 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Laracasts\Utilities\JavaScript\JavaScriptFacade;
 
 use App\Http\Requests\ApplicationEditRequest;
 use App\Http\Requests\ApplicationPostRequest;
 use App\Mail\NewApplicationMail;
-use Illuminate\Support\Facades\Auth;
-use Laracasts\Utilities\JavaScript\JavaScriptFacade;
-
-use Carbon\Carbon;
 
 use App\Models\User;
 use App\Models\LeaveDetail;
 use App\Models\LeaveApplication;
 use App\Models\Holiday;
 use App\Models\RefLeaveType;
+use App\Notifications\NewApplicationAlert;
+
+use Carbon\Carbon;
 
 use App\Traits\LeaveTrait;
-use Illuminate\Support\Facades\Mail;
 
 class ApplicationController extends Controller
 {
@@ -123,9 +124,12 @@ class ApplicationController extends Controller
                         $application->application_status_id = 1; //Pending Status
 
                         $application->save();
-                        $application_id = $application->id;
 
-                        Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+                        $application_id = $application->id;
+                        // Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+
+                        $application->user->employee->approver->notify(new NewApplicationAlert($application));
+
                         return redirect('/application/list')->with('success', 'Application submitted.');
                     }
                     else
@@ -144,8 +148,10 @@ class ApplicationController extends Controller
                                 $application->save();
 
                                 $application_id = $application->id;
+                                // Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
 
-                                Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+                                $application->user->employee->approver->notify(new NewApplicationAlert($application));
+
 
                                 return redirect('/application/list')->with('success', 'Application submitted.');
                             }
@@ -167,9 +173,13 @@ class ApplicationController extends Controller
                                 $application->application_status_id = 1; // Pending Status
 
                                 $application->save();
-                                $application_id = $application->id;
 
-                                Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+                                $application_id = $application->id;
+                                // Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+
+                                $application->user->employee->approver->notify(new NewApplicationAlert($application));
+
+
 
                                 return redirect('/application/list')->with('success', 'Application submitted.');
                             }

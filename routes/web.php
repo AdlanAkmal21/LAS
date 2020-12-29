@@ -88,3 +88,7 @@ Route::post('forgot-reset-password', [ForgotPasswordController::class , 'reset']
 //Mail Controller
 Route::post('apply-mail', [MailController::class , 'postApply'])->name('mail.postApply');
 Route::post('approval-mail', [MailController::class , 'postApproval'])->name('mail.postApproval');
+
+
+//Notification
+Route::get('user/notifications', [UserController::class, 'notifications'])->name('users.notifications');
