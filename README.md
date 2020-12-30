@@ -9,7 +9,7 @@
 
 ## About Leave Application System (LAS)
 
-LAS is a leave application system developed by AA & WN for IGS Protech Sdn. Bhd. company use.
+LAS is a leave application system developed by NL, AA & WN for IGS Protech Sdn. Bhd. company use.
 
 ## License
 
