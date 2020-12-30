@@ -25,82 +25,50 @@ $(function () {
     });
 });
 
-//Apply Leave DatePicker - From & To - (Employees)
-$(function () {
-    //Disable Weekends & Holidays
-    function setHoliDays(date) {
-        var holidays = jsbinder.holidays;
-        var day = date.getDay();
+//Disable Weekends & Holidays
+function setHoliDays(date) {
+    var holidays = jsbinder.holidays;
+    var day = date.getDay();
 
-        if (day == 0 || day == 6) {
-            return [false, "weekends"];
-        }
-
-        for (i = 0; i < holidays.length; i++) {
-            var holiday = new Date(Date.parse(holidays[i]));
-
-            var holidaydate = holiday.getDate();
-            var holidaymonth = holiday.getMonth();
-            var holidayyear = holiday.getFullYear();
-
-            if (
-                date.getFullYear() == holidayyear &&
-                date.getMonth() == holidaymonth &&
-                date.getDate() == holidaydate
-            ) {
-                return [false, "holidays"];
-            }
-        }
-        return [true, ""];
+    if (day == 0 || day == 6) {
+        return [false, "weekends"];
     }
 
+    for (i = 0; i < holidays.length; i++) {
+        var holiday = new Date(Date.parse(holidays[i]));
+
+        var holidaydate = holiday.getDate();
+        var holidaymonth = holiday.getMonth();
+        var holidayyear = holiday.getFullYear();
+
+        if (
+            date.getFullYear() == holidayyear &&
+            date.getMonth() == holidaymonth &&
+            date.getDate() == holidaydate
+        ) {
+            return [false, "holidays"];
+        }
+    }
+    return [true, ""];
+}
+
+//Apply Leave DatePicker - From & To - (Employees)
+$(function () {
     $("#leave_type_id")
         .on("change", function () {
-            var type = $(this).children("option:selected").val();
+            // var type = $(this).children("option:selected").val();
+            var type = $("#leave_type_id").val();
+
             $("#from, #to").datepicker("destroy");
-            if (type == 2 || type == 3 || type == 4) {
-                $("#from, #to, #days_taken").val(null);
 
-                //From
-                $("#from").datepicker({
-                    dateFormat: "dd/mm/yy",
-                    showOnFocus: false,
-                    beforeShowDay: setHoliDays,
-                    pickerClass: "noPrevNext",
-                    defaultDate: "+1D",
-                    changeMonth: true,
-                    numberOfMonths: 2,
-                    showAnim: "drop",
-                    showOtherMonths: true,
-                    maxDate: "+1Y",
-                    onSelect: function (dateStr) {
-                        var min = $(this).datepicker("getDate");
-                        $("#to").datepicker("option", "minDate", min || "0");
-                        datepicked();
-                    },
-                });
-                //To
-                $("#to").datepicker({
-                    dateFormat: "dd/mm/yy",
-                    showOnFocus: false,
-                    beforeShowDay: setHoliDays,
-                    pickerClass: "noPrevNext",
-                    numberOfMonths: 2,
-                    changeMonth: true,
-                    defaultDate: "+1D",
-                    showAnim: "drop",
-                    showOtherMonths: true,
-                    maxDate: "+1Y",
+            if (type == 1 || type == "Annual Leave") {
+                if (type != null) {
+                    if (type == 1 || type == 2 || type == 3 || type == 4) {
+                        $("#from, #to, #days_taken").val(null);
+                    }
+                }
 
-                    onSelect: function (dateStr) {
-                        var min = $(this).datepicker("getDate");
-                        $("#to").datepicker("option", "minDate", min || "0");
-                        datepicked();
-                    },
-                });
-            } else {
-                $("#from, #to, #days_taken").val(null);
-                //From
+                //From - Annual
                 $("#from").datepicker({
                     dateFormat: "dd/mm/yy",
                     showOnFocus: false,
@@ -120,7 +88,7 @@ $(function () {
                     },
                 });
 
-                //To
+                //To - Annual
                 $("#to").datepicker({
                     dateFormat: "dd/mm/yy",
                     showOnFocus: false,
@@ -140,6 +108,49 @@ $(function () {
                             "maxDate",
                             max || "+1Y"
                         );
+                        datepicked();
+                    },
+                });
+            } else {
+                if (type != null) {
+                    if (type == 1 || type == 2 || type == 3 || type == 4) {
+                        $("#from, #to, #days_taken").val(null);
+                    }
+                }
+                //From
+                $("#from").datepicker({
+                    dateFormat: "dd/mm/yy",
+                    showOnFocus: false,
+                    beforeShowDay: setHoliDays,
+                    pickerClass: "noPrevNext",
+                    defaultDate: "+1D",
+                    changeMonth: true,
+                    numberOfMonths: 2,
+                    showAnim: "drop",
+                    showOtherMonths: true,
+                    maxDate: "+1Y",
+                    onSelect: function (dateStr) {
+                        var min = $(this).datepicker("getDate");
+                        $("#to").datepicker("option", "minDate", min || "0");
+                        datepicked();
+                    },
+                });
+                //To
+                $("#to").datepicker({
+                    dateFormat: "dd/mm/yy",
+                    showOnFocus: false,
+                    beforeShowDay: setHoliDays,
+                    pickerClass: "noPrevNext",
+                    numberOfMonths: 2,
+                    changeMonth: true,
+                    defaultDate: "+1D",
+                    showAnim: "drop",
+                    showOtherMonths: true,
+                    maxDate: "+1Y",
+
+                    onSelect: function (dateStr) {
+                        var min = $(this).datepicker("getDate");
+                        $("#to").datepicker("option", "minDate", min || "0");
                         datepicked();
                     },
                 });

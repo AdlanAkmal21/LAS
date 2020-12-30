@@ -20,7 +20,7 @@
                 </div>
 
                 <h4 class="text-muted font-weight-lighter pt-2">Active Leave Application</h4>
-                <div class="table-responsive-md">
+                <div class="table-responsive-lg">
                     <table class="table table-bordered table-sm">
                         <thead class="table-success">
                             <tr>
@@ -65,12 +65,11 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{ $actives->links() }}
                 </div>
-
+                {{ $actives->links() }}
 
                 <h4 class="text-muted font-weight-lighter pt-2">Past Leave Application</h4>
-                <div class="table-responsive-md">
+                <div class="table-responsive-lg">
                     <table class="table table-bordered table-sm">
                         <thead class="table-secondary">
                             <tr>
@@ -100,12 +99,42 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{ $pasts->links() }}
                 </div>
+                {{ $pasts->links() }}
 
-
-
-
+                <h4 class="text-muted font-weight-lighter pt-2">Medical Leave Application</h4>
+                <div class="table-responsive-lg">
+                    <table class="table table-bordered table-sm">
+                        <thead class="table-secondary">
+                            <tr>
+                                <th>#</th>
+                                <th>Leave Type</th>
+                                <th>From</th>
+                                <th>To</th>
+                                <th>Applied At</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($medicals as $key => $medical)
+                            <tr>
+                                <td>{{ $medicals->firstItem() + $key }}.</td>
+                                <td>{{ $medical->refLeaveType->leave_type_name }}</td>
+                                <td>{{ $medical->from }}</td>
+                                <td>{{ $medical->to }}</td>
+                                <td>{{ $medical->created_at }}</td>
+                                <td>{{ $medical->refAppStatus->application_status_name }}</td>
+                                <td>
+                                    <a href="{{ route('applications.show', $medical->id)}}"
+                                        class="btn btn-secondary btn-sm btn-block">Show</a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                {{ $medicals->links() }}
 
 
             </div><!-- End Page Content -->

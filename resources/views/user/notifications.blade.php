@@ -68,6 +68,9 @@
                             @endforeach
                         </ul>
                     </div>
+                    <div class="card-footer">
+                        {{$notifications->links()}}
+                    </div>
                 </div>
 
 

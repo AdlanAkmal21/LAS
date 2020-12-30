@@ -27,10 +27,9 @@
                     <input type="text" size="3" name="total_employees" disabled value="{{$employees_count}}">
                 </span>
 
-                <div class="table-responsive-md">
-                    <table
-                        class="table table-sm table-dark table-bordered table-hover table-striped table-responsive-lg container small">
-                        <thead>
+                <div class="table-responsive-lg">
+                    <table class="table table-sm table-bordered table-hover table-striped container small">
+                        <thead class="table-dark">
                             <tr class="d-flex">
                                 <th class="col-1">#</th>
                                 <th class="col-4">Employee Name</th>
@@ -73,9 +72,8 @@
                         </tbody>
 
                     </table>
-                    {{ $users->links() }}
                 </div>
-
+                {{ $users->links() }}
 
 
             </div><!-- End Page Content -->

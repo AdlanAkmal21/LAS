@@ -21,9 +21,11 @@ trait LeaveTrait{
             foreach($applications as $application){
                 if($application->application_status_id == 1)
                 {
-                    $application->application_status_id = 3;
-                    $application->approval_date         = Carbon::now();
-                    $application->save();
+                    if ($application->leave_type_id == 1) {
+                        $application->application_status_id = 3;
+                        $application->approval_date         = Carbon::now();
+                        $application->save();
+                    }
                 }
             }
         }

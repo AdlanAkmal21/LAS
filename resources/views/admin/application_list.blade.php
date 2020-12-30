@@ -13,10 +13,10 @@
                 <!-- Begin Page Content -->
 
                 <div class="d-sm-flex align-items-center justify-content-between">
-                    <h1 class="h3 mb-0 text-gray-800">Application List</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Employees Applications List (Overall)</h1>
                 </div>
                 <p>Click on the row to view application details.</p>
-                <div class="table-responsive-md">
+                <div class="table-responsive-lg">
                     <table
                         class="table table-sm table-dark table-bordered table-hover table-responsive-lg container small">
                         <thead>
@@ -41,9 +41,8 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{ $applications->links() }}
                 </div>
-
+                {{ $applications->links() }}
 
 
             </div><!-- End Page Content -->

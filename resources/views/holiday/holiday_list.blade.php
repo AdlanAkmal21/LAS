@@ -28,7 +28,7 @@
                     <input type="text" size="3" name="total_holidays" disabled value="{{$holidays_count}}">
                 </span>
 
-                <div class="table-responsive-md">
+                <div class="table-responsive-lg">
                     <table
                         class="table table-light table-bordered table-hover table-striped table-responsive-lg container small">
                         <thead>
@@ -58,9 +58,8 @@
                         </tbody>
 
                     </table>
-                    {{ $holidays->links() }}
                 </div>
-
+                {{ $holidays->links() }}
 
 
             </div><!-- End Page Content -->

@@ -49,16 +49,22 @@ class ApplicationController extends Controller
     public function list()
     {
         $actives         = LeaveApplication::where('user_id', Auth::id())
-                                            ->where('to', '>=', Carbon::today())
                                             ->where('application_status_id','!=',3)
+                                            ->where('leave_type_id','!=',2)
+                                            ->orWhere('to', '>=', Carbon::today())
                                             ->paginate(5);
 
         $pasts           = LeaveApplication::where('user_id', Auth::id())
                                             ->where('to', '<', Carbon::today())
-                                            ->orWhere('application_status_id', 3)
+                                            ->where('application_status_id','!=',1)
+                                            ->where('leave_type_id', '!=', 2)
                                             ->paginate(5);
 
-        return view('application.application_list' , compact('actives', 'pasts'));
+        $medicals         = LeaveApplication::where('user_id', Auth::id())
+                                            ->where('leave_type_id', 2)
+                                            ->paginate(5);
+
+        return view('application.application_list' , compact('actives', 'pasts', 'medicals'));
     }
 
     /**
@@ -137,7 +143,7 @@ class ApplicationController extends Controller
                 $application->save();
 
                 $application_id = $application->id;
-                Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+                // Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
 
                 $application->user->employee->approver->notify(new NewApplicationAlert($application));
 
@@ -163,7 +169,7 @@ class ApplicationController extends Controller
                                     $application->save();
 
                                     $application_id = $application->id;
-                                    Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+                                    // Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
 
                                     $application->user->employee->approver->notify(new NewApplicationAlert($application));
 
@@ -191,7 +197,7 @@ class ApplicationController extends Controller
                                     $application->save();
 
                                     $application_id = $application->id;
-                                    Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+                                    // Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
 
                                     $application->user->employee->approver->notify(new NewApplicationAlert($application));
 

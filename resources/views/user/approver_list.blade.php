@@ -21,7 +21,7 @@
                 <div class="card">
                     <div class="card-body">
 
-                        <div class="table-responsive-md">
+                        <div class="table-responsive-lg">
                             <table
                                 class="table table-active table-bordered table-hover container table-secondary small">
                                 <thead class="text-center">
@@ -82,9 +82,8 @@
                                     @endisset
                                 </tbody>
                             </table>
-                            {{ $pendings->links() }}
                         </div>
-
+                        {{ $pendings->links() }}
                     </div>
                 </div>
 
@@ -95,7 +94,7 @@
                 <div class="card">
                     <div class="card-body">
 
-                        <div class="table-responsive-md">
+                        <div class="table-responsive-lg">
                             <table class="table table-active table-bordered table-hover container table-success small">
                                 <thead class="text-center">
                                     <tr class="table-success">
@@ -132,9 +131,8 @@
                                     @endisset
                                 </tbody>
                             </table>
-                            {{ $approved->links() }}
                         </div>
-
+                        {{ $approved->links() }}
                     </div>
                 </div>
 
@@ -145,7 +143,7 @@
                 <div class="card">
                     <div class="card-body">
 
-                        <div class="table-responsive-md">
+                        <div class="table-responsive-lg">
                             <table class="table table-active table-bordered table-hover table-danger container small">
                                 <thead class="text-center">
                                     <tr class="table-danger">
@@ -182,9 +180,8 @@
                                     @endisset
                                 </tbody>
                             </table>
-                            {{ $rejected->links() }}
                         </div>
-
+                        {{ $rejected->links() }}
                     </div>
                 </div>
 

@@ -37,7 +37,7 @@
                                     <div class="form-group">
                                         <label class="label" for="leave_type_id">Leave Type</label>
                                         <select class="form-control" id="leave_type_id" name="leave_type_id">
-                                            <option selected disabled>Select Leave Type</option>
+                                            <option selected disabled value="0">Select Leave Type</option>
                                             @foreach ($refLeaveTypes as $refLeaveType)
                                             <option @if(old('leave_type_id')==$refLeaveType->id
                                                 )

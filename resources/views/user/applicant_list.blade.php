@@ -16,7 +16,7 @@
                     <h1 class="h3 mb-0 text-gray-800">Applicant List</h1>
                 </div>
 
-                <div class="table-responsive-md">
+                <div class="table-responsive-lg">
                     <table
                         class="table table-bordered table-light table-hover table-striped table-responsive-lg container small">
                         <thead>
@@ -40,8 +40,8 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{ $users->links() }}
                 </div>
+                {{ $users->links() }}
 
             </div><!-- End Page Content -->
         </div><!-- End Main Content -->

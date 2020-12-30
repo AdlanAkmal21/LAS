@@ -58,7 +58,8 @@
                 <a class="collapse-item" href="{{ route('admins.employeelist') }}">Employee List</a>
                 <div class="collapse-divider"></div>
                 <h6 class="collapse-header">Manage Applications:</h6>
-                <a class="collapse-item" href="{{ route('admins.applicationlist') }}">Applications List</a>
+                <a class="collapse-item" style="font-size: 90%;"
+                    href="{{ route('admins.applicationlist') }}">Applications List (Overall)</a>
                 <h6 class="collapse-header">Manage Holidays:</h6>
                 <a class="collapse-item" href="{{ route('holidays.create') }}">Add Holiday</a>
                 <a class="collapse-item" href="{{ route('holidays.index') }}">Holiday List</a>
