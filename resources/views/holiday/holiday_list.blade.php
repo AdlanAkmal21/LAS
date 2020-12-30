@@ -28,36 +28,39 @@
                     <input type="text" size="3" name="total_holidays" disabled value="{{$holidays_count}}">
                 </span>
 
-                <table
-                    class="table table-light table-bordered table-hover table-striped table-responsive-lg container small">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Holiday Name</th>
-                            <th>Holiday Date</th>
-                            <th colspan="2">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($holidays as $key => $holiday)
-                        <tr>
-                            <td>{{ $holidays->firstItem() + $key }}.</td>
-                            <td>{{ $holiday->holiday_name }}</td>
-                            <td>{{ $holiday->holiday_date }}</td>
-                            <td>
-                                <a class="btn btn-success btn-block btn-sm"
-                                    href="{{ route('holidays.edit', $holiday->id)}}">Edit</a>
-                            </td>
-                            <td>
-                                <a class="btn btn-danger btn-block btn-sm"
-                                    href="{{ route('holidays.destroy', $holiday->id)}}">Delete</a>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
+                <div class="table-responsive-md">
+                    <table
+                        class="table table-light table-bordered table-hover table-striped table-responsive-lg container small">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Holiday Name</th>
+                                <th>Holiday Date</th>
+                                <th colspan="2">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($holidays as $key => $holiday)
+                            <tr>
+                                <td>{{ $holidays->firstItem() + $key }}.</td>
+                                <td>{{ $holiday->holiday_name }}</td>
+                                <td>{{ $holiday->holiday_date }}</td>
+                                <td>
+                                    <a class="btn btn-success btn-block btn-sm"
+                                        href="{{ route('holidays.edit', $holiday->id)}}">Edit</a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-danger btn-block btn-sm"
+                                        href="{{ route('holidays.destroy', $holiday->id)}}">Delete</a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
 
-                </table>
-                {{ $holidays->links() }}
+                    </table>
+                    {{ $holidays->links() }}
+                </div>
+
 
 
             </div><!-- End Page Content -->

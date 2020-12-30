@@ -56,6 +56,7 @@ class NewApplicationAlert extends Notification
         return [
             'application_id' => $this->application->id,
             'applicant_name' => $this->application->user->name,
+            'leave_type' => $this->application->leave_type_id,
             'created_at' => Carbon::parse($this->application->created_at)->toDayDateTimeString(),
         ];
     }

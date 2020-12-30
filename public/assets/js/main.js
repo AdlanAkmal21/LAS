@@ -25,8 +25,6 @@ $(function () {
     });
 });
 
-$(function () {});
-
 //Apply Leave DatePicker - From & To - (Employees)
 $(function () {
     //Disable Weekends & Holidays
@@ -56,45 +54,99 @@ $(function () {
         return [true, ""];
     }
 
-    //From
-    $("#from").datepicker({
-        dateFormat: "dd/mm/yy",
-        showOnFocus: false,
-        beforeShowDay: setHoliDays,
-        pickerClass: "noPrevNext",
-        defaultDate: "+1D",
-        changeMonth: true,
-        numberOfMonths: 2,
-        showAnim: "drop",
-        showOtherMonths: true,
-        minDate: "+1D",
-        maxDate: "+1Y",
-        onSelect: function (dateStr) {
-            var min = $(this).datepicker("getDate");
-            $("#to").datepicker("option", "minDate", min || "0");
-            datepicked();
-        },
-    });
+    $("#leave_type_id")
+        .on("change", function () {
+            var type = $(this).children("option:selected").val();
+            $("#from, #to").datepicker("destroy");
+            if (type == 2 || type == 3 || type == 4) {
+                $("#from, #to, #days_taken").val(null);
 
-    //To
-    $("#to").datepicker({
-        dateFormat: "dd/mm/yy",
-        showOnFocus: false,
-        beforeShowDay: setHoliDays,
-        pickerClass: "noPrevNext",
-        numberOfMonths: 2,
-        changeMonth: true,
-        defaultDate: "+1D",
-        showAnim: "drop",
-        showOtherMonths: true,
-        minDate: "0",
-        maxDate: "+1Y",
-        onSelect: function (dateStr) {
-            var max = $(this).datepicker("getDate");
-            $("#from").datepicker("option", "maxDate", max || "+1Y");
-            datepicked();
-        },
-    });
+                //From
+                $("#from").datepicker({
+                    dateFormat: "dd/mm/yy",
+                    showOnFocus: false,
+                    beforeShowDay: setHoliDays,
+                    pickerClass: "noPrevNext",
+                    defaultDate: "+1D",
+                    changeMonth: true,
+                    numberOfMonths: 2,
+                    showAnim: "drop",
+                    showOtherMonths: true,
+                    maxDate: "+1Y",
+                    onSelect: function (dateStr) {
+                        var min = $(this).datepicker("getDate");
+                        $("#to").datepicker("option", "minDate", min || "0");
+                        datepicked();
+                    },
+                });
+                //To
+                $("#to").datepicker({
+                    dateFormat: "dd/mm/yy",
+                    showOnFocus: false,
+                    beforeShowDay: setHoliDays,
+                    pickerClass: "noPrevNext",
+                    numberOfMonths: 2,
+                    changeMonth: true,
+                    defaultDate: "+1D",
+                    showAnim: "drop",
+                    showOtherMonths: true,
+                    maxDate: "+1Y",
+
+                    onSelect: function (dateStr) {
+                        var min = $(this).datepicker("getDate");
+                        $("#to").datepicker("option", "minDate", min || "0");
+                        datepicked();
+                    },
+                });
+            } else {
+                $("#from, #to, #days_taken").val(null);
+                //From
+                $("#from").datepicker({
+                    dateFormat: "dd/mm/yy",
+                    showOnFocus: false,
+                    beforeShowDay: setHoliDays,
+                    pickerClass: "noPrevNext",
+                    defaultDate: "+1D",
+                    changeMonth: true,
+                    numberOfMonths: 2,
+                    showAnim: "drop",
+                    showOtherMonths: true,
+                    minDate: "+1D",
+                    maxDate: "+1Y",
+                    onSelect: function (dateStr) {
+                        var min = $(this).datepicker("getDate");
+                        $("#to").datepicker("option", "minDate", min || "0");
+                        datepicked();
+                    },
+                });
+
+                //To
+                $("#to").datepicker({
+                    dateFormat: "dd/mm/yy",
+                    showOnFocus: false,
+                    beforeShowDay: setHoliDays,
+                    pickerClass: "noPrevNext",
+                    numberOfMonths: 2,
+                    changeMonth: true,
+                    defaultDate: "+1D",
+                    showAnim: "drop",
+                    showOtherMonths: true,
+                    minDate: "0",
+                    maxDate: "+1Y",
+                    onSelect: function (dateStr) {
+                        var max = $(this).datepicker("getDate");
+                        $("#from").datepicker(
+                            "option",
+                            "maxDate",
+                            max || "+1Y"
+                        );
+                        datepicked();
+                    },
+                });
+            }
+            $("#from, #to").datepicker("refresh");
+        })
+        .trigger("change");
 });
 
 // Leave Application Logic

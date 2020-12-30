@@ -16,37 +16,38 @@
                     <h1 class="h3 mb-0 text-gray-800">Individual Report</h1>
                 </div>
 
-                <table
-                    class="table small table-dark table-bordered table-hover table-striped table-responsive-lg container">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Employee Name</th>
-                            <th>Role</th>
-                            <th>Employee Status</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($users as $key => $user)
-                        <tr class="table-tr">
-                            <td>{{ $users->firstItem() + $key }}.</td>
-                            <td>{{ $user->name }}</td>
-                            <td>{{ $user->refRole->role_name }}</td>
-                            <td>{{ $user->refEmpStatus->emp_status_name }}</td>
-                            <td>
-                                <a href="{{ route('report.findindividual', $user->id)}}"
-                                    class="btn btn-primary btn-sm btn-block">
-                                    Show
-                                </a>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
+                <div class="table-responsive-md">
+                    <table
+                        class="table small table-dark table-bordered table-hover table-striped table-responsive-lg container">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Employee Name</th>
+                                <th>Role</th>
+                                <th>Employee Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($users as $key => $user)
+                            <tr class="table-tr">
+                                <td>{{ $users->firstItem() + $key }}.</td>
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->refRole->role_name }}</td>
+                                <td>{{ $user->refEmpStatus->emp_status_name }}</td>
+                                <td>
+                                    <a href="{{ route('report.findindividual', $user->id)}}"
+                                        class="btn btn-primary btn-sm btn-block">
+                                        Show
+                                    </a>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
 
-                </table>
-                {{ $users->links() }}
-
+                    </table>
+                    {{ $users->links() }}
+                </div>
 
             </div><!-- End Page Content -->
         </div><!-- End Main Content -->

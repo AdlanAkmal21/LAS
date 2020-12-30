@@ -102,105 +102,122 @@ class ApplicationController extends Controller
             $days_taken = $days_taken - (0.5);
         }
 
-        $applications_temp          = LeaveApplication::where('user_id', $user->id)->where('application_status_id',1)->sum('days_taken');
+        $applications_temp          = LeaveApplication::where('user_id', $user->id)->where('application_status_id',1)->where('leave_type_id',1)->sum('days_taken');
         $applications_temp_sum      = $applications_temp + $days_taken;
 
-            if($days_taken<= $leave->balance_leaves)
+            //Medical & Emergency Leave & Unrecorded Leave
+            $application                = new LeaveApplication();
+            $application->user_id       = $user->id;
+            $application->leave_id      = $leave->id;
+            $application->leave_type_id = $request->get('leave_type_id');
+
+            if($application->leave_type_id == 2 || $application->leave_type_id == 3 || $application->leave_type_id == 4 ) //Medical or Emergency or Unrecorded
             {
-                if($applications_temp_sum <= $leave->balance_leaves) // Check Current Balance Leaves. If sufficient, proceed.
-                {
-                    $application                = new LeaveApplication();
-                    $application->user_id       = $user->id;
-                    $application->leave_id      = $leave->id;
-                    $application->leave_type_id = $request->get('leave_type_id');
+                $application->from                  = $from;
+                $application->to                    = $to;
+                $application->days_taken            = $days_taken;
+                $application->half_day              = $half_day;
+                $application->reason                = $request->get('reason');
 
-                    if($application->leave_type_id == 2 || $application->leave_type_id == 3 || $application->leave_type_id == 4 ) //Medical or Emergency or Unrecorded
-                    {
-                        $application->from                  = $from;
-                        $application->to                    = $to;
-                        $application->days_taken            = $days_taken;
-                        $application->half_day              = $half_day;
-                        $application->reason                = $request->get('reason');
-                        $application->application_status_id = 1; //Pending Status
-
-                        $application->save();
-
-                        $application_id = $application->id;
-                        Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
-
-                        $application->user->employee->approver->notify(new NewApplicationAlert($application));
-
-                        return redirect('/application/list')->with('success', 'Application submitted.');
+                //Emergency Leave must have reason.
+                if ($application->leave_type_id == 3) {
+                    if ($request->get('reason') == null) {
+                        return back()->withInput()->with('error', 'Emergency Leave: Please State Your Reason.');
                     }
-                    else
-                    {
-                        if($days_taken <= 2) //Annual Leave. Check days taken. If days taken <= 2 days, proceed.
-                        {
-                            if( $fromDiff >= 2)
-                            {
-                                $application->from                  = $from;
-                                $application->to                    = $to;
-                                $application->days_taken            = $days_taken;
-                                $application->half_day              = $half_day;
-                                $application->reason                = $request->get('reason');
-                                $application->application_status_id = 1; //Pending Status
-
-                                $application->save();
-
-                                $application_id = $application->id;
-                                Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
-
-                                $application->user->employee->approver->notify(new NewApplicationAlert($application));
-
-
-                                return redirect('/application/list')->with('success', 'Application submitted.');
-                            }
-                            else // Annual Leave. Days taken <= 2 days, but 1 day before. Error. Must apply 2 days before.
-                            {
-                                return redirect('/application/apply')->with('error', 'Cannot Apply: Application must be applied 2 days before.');
-                            }
-
-                        }
-                        else //Annual Leave. More than 2 days, error. Must apply 7 days prior.
-                        {
-                            if($fromDiff >= 7)
-                            {
-                                $application->from                  = $from;
-                                $application->to                    = $to;
-                                $application->days_taken            = $days_taken;
-                                $application->half_day              = $half_day;
-                                $application->reason                = $request->get('reason');
-                                $application->application_status_id = 1; // Pending Status
-
-                                $application->save();
-
-                                $application_id = $application->id;
-                                Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
-
-                                $application->user->employee->approver->notify(new NewApplicationAlert($application));
-
-
-
-                                return redirect('/application/list')->with('success', 'Application submitted.');
-                            }
-                            else
-                            {
-                                return redirect('/application/apply')->with('error', 'Cannot Apply: Application must be applied 7 days before.');
-                            }
-                        }
-                    }
-
                 }
-                else// If Pending Applications' Days Taken Exceeds Leave Balance, Error.
+
+                //Medical Leave Auto-Approved
+                if ($application->leave_type_id == 2) {
+                    $application->application_status_id = 2;
+                }
+                else{
+                    $application->application_status_id = 1;
+                }
+
+                $application->save();
+
+                $application_id = $application->id;
+                Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+
+                $application->user->employee->approver->notify(new NewApplicationAlert($application));
+
+                return redirect('/application/list')->with('success', 'Application submitted.');
+            }
+            else {
+                if($days_taken<= $leave->balance_leaves)
                 {
-                    return redirect('/application/apply')->with('error', 'Cannot Apply: Pending Applications Exceeds Leave Balance!');
+                    if($applications_temp_sum <= $leave->balance_leaves) // Check Current Balance Leaves. If sufficient, proceed.
+                    {
+
+                            if($days_taken <= 2) //Annual Leave. Check days taken. If days taken <= 2 days, proceed.
+                            {
+                                if( $fromDiff >= 2)
+                                {
+                                    $application->from                  = $from;
+                                    $application->to                    = $to;
+                                    $application->days_taken            = $days_taken;
+                                    $application->half_day              = $half_day;
+                                    $application->reason                = $request->get('reason');
+                                    $application->application_status_id = 1; //Pending Status
+
+                                    $application->save();
+
+                                    $application_id = $application->id;
+                                    Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+
+                                    $application->user->employee->approver->notify(new NewApplicationAlert($application));
+
+
+                                    return redirect('/application/list')->with('success', 'Application submitted.');
+                                }
+                                else // Annual Leave. Days taken <= 2 days, but 1 day before. Error. Must apply 2 days before.
+                                {
+                                    return back()->withInput()->with('error', 'Cannot Apply: Application Must Be Applied 2 Days Before!');
+
+                                }
+
+                            }
+                            else //Annual Leave. More than 2 days, error. Must apply 7 days prior.
+                            {
+                                if($fromDiff >= 7)
+                                {
+                                    $application->from                  = $from;
+                                    $application->to                    = $to;
+                                    $application->days_taken            = $days_taken;
+                                    $application->half_day              = $half_day;
+                                    $application->reason                = $request->get('reason');
+                                    $application->application_status_id = 1; // Pending Status
+
+                                    $application->save();
+
+                                    $application_id = $application->id;
+                                    Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+
+                                    $application->user->employee->approver->notify(new NewApplicationAlert($application));
+
+
+
+                                    return redirect('/application/list')->with('success', 'Application submitted.');
+                                }
+                                else
+                                {
+                                    return back()->withInput()->with('error', 'Cannot Apply: Application Must Be Applied 7 Days Before!');
+                                }
+                            }
+
+
+                    }
+                    else// If Pending Applications' Days Taken Exceeds Leave Balance, Error.
+                    {
+                        return back()->withInput()->with('error', 'Cannot Apply: Pending Applications Exceeds Leave Balance!');
+
+                    }
+                }
+                else // If Current Balance Leaves not sufficient, error.
+                {
+                        return back()->withInput()->with('error', 'Cannot Apply: Insufficient Leave Balance!');
                 }
             }
-            else // If Current Balance Leaves not sufficient, error.
-            {
-                return redirect('/application/apply')->with('error', 'Cannot Apply: Insufficient Leave Balance!');
-            }
-
 
 
     }

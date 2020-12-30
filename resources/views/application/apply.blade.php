@@ -56,17 +56,21 @@
                             <div class="form-row">
                                 <div class="col-xl-4">
                                     <div class="form-group">
-                                        <label class="label" for="from">From</label>
-                                        <input class="form-control" type="text" placeholder="dd/mm/yyyy" name="from"
-                                            id="from" value="{{ old('from') }}">
+                                        <label class="label" for="from">From
+                                            <span class="text-muted"
+                                                style="font-size: 10px;">(dd/mm/yyyy)</span></label>
+                                        <input class="form-control" type="text" placeholder="Select From Date..."
+                                            name="from" id="from" value="{{ old('from') }}">
                                     </div>
                                 </div>
 
                                 <div class="col-xl-4">
                                     <div class="form-group">
-                                        <label class="label" for="to">To</label>
-                                        <input class="form-control" type="text" placeholder="dd/mm/yyyy" name="to"
-                                            id="to" value="{{ old('to') }}">
+                                        <label class="label" for="to">To
+                                            <span class="text-muted"
+                                                style="font-size: 10px;">(dd/mm/yyyy)</span></label>
+                                        <input class="form-control" type="text" placeholder="Select To Date..."
+                                            name="to" id="to" value="{{ old('to') }}">
                                     </div>
                                 </div>
 
@@ -93,7 +97,7 @@
                                     <div class="form-group">
                                         <label class="label" for="reason">Reason</label>
                                         <input name="reason" style="resize:none" class="form-control"
-                                            placeholder="State your reason..">
+                                            placeholder="State your reason.." value="{{ old('reason')}}">
                                     </div>
                                 </div>
                             </div>

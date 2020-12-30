@@ -75,6 +75,7 @@ class UserController extends Controller
                                         ->where('application_status_id', 3)
                                         ->paginate(5);
 
+
         return view('user.approver_list', compact('pendings','approved','rejected'));
     }
 
@@ -123,7 +124,7 @@ class UserController extends Controller
         $application->approval_date            = Carbon::now();
         $application->save();
 
-        if ($application->leave_type_id != 2 &&  $application->leave_type_id != 4) { //Except Medical and Unrecorded Leave
+        if ($application->leave_type_id == 1 || $application->leave_type_id == 3) { //Annual & Emergency Leave
             $leave                                 = LeaveDetail::find($application->leave_id);
             $new_balance_leaves                    = ($leave->balance_leaves)-($application->days_taken);
             $leave->balance_leaves                 = $new_balance_leaves;
