@@ -36,8 +36,8 @@
                                 <div class="col-6">
                                     <div class="form-group">
                                         <label class="label" for="leave_type_id">Leave Type</label>
-                                        <input class="form-control" type="text" name="leave_type_id" readonly
-                                            value="{{$application->refLeaveType->leave_type_name}}">
+                                        <input class="form-control" type="text" name="leave_type_id" id="leave_type_id"
+                                            readonly value="{{$application->refLeaveType->leave_type_name}}">
                                     </div>
                                 </div>
                             </div>
