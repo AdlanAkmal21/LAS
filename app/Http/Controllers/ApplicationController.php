@@ -51,7 +51,7 @@ class ApplicationController extends Controller
         $actives         = LeaveApplication::where('user_id', Auth::id())
                                             ->where('application_status_id','!=',3)
                                             ->where('leave_type_id','!=',2)
-                                            ->orWhere('to', '>=', Carbon::today())
+                                            ->where('to', '>=', Carbon::today())
                                             ->paginate(5);
 
         $pasts           = LeaveApplication::where('user_id', Auth::id())
@@ -207,7 +207,7 @@ class ApplicationController extends Controller
                                 }
                                 else
                                 {
-                                    return back()->withInput()->with('error', 'Cannot Apply: Application Must Be Applied 7 Days Before!');
+                                    return back()->withInput()->with('error', 'Cannot Apply: Application More Than 2 Days Must Be Applied 7 Days Before!');
                                 }
                             }
 

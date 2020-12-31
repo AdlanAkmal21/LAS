@@ -105,7 +105,7 @@
                 <h4 class="text-muted font-weight-lighter pt-2">Medical Leave Application</h4>
                 <div class="table-responsive-lg">
                     <table class="table table-bordered table-sm">
-                        <thead class="table-secondary">
+                        <thead class="table-warning">
                             <tr>
                                 <th>#</th>
                                 <th>Leave Type</th>
