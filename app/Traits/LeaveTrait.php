@@ -8,7 +8,7 @@ use App\Models\EmployeeDetail;
 use App\Models\LeaveDetail;
 use App\Models\LeaveApplication;
 use App\Models\Holiday;
-
+use Carbon\CarbonImmutable;
 
 trait LeaveTrait{
 
@@ -186,6 +186,10 @@ trait LeaveTrait{
 
     public function dashboardAdmins()
     {
+        $en = CarbonImmutable::now()->locale('en_MY');
+        $start = $en->startOfWeek(Carbon::SUNDAY)->format('Y-m-d');
+        $end = $en->endOfWeek(Carbon::SATURDAY)->format('Y-m-d');
+
         //Employees
         $employees                      = User::where('id','!=', 1)->get();
         $resigned                       = User::where('id','!=', 1)

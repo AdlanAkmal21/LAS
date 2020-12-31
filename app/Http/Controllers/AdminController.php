@@ -18,7 +18,6 @@ use App\Models\RefGender;
 
 
 use App\Traits\LeaveTrait;
-use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {

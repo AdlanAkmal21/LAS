@@ -57,8 +57,14 @@
                                             <a href="{{ route('applications.edit', $active->id)}}"
                                                 class="dropdown-item text-success">Edit</a>
                                             <div class="dropdown-divider"></div>
-                                            <a href="{{ route('applications.destroy', $active->id)}}"
-                                                class="dropdown-item text-danger">Delete</a>
+
+                                            <form action="{{ route('applications.destroy', $active->id)}}"
+                                                method="post">
+                                                @csrf
+                                                @method('DELETE')
+                                                <input class="dropdown-item text-danger" role="button" type="submit"
+                                                    value="Delete">
+                                            </form>
                                             @endif
                                         </div>
                                     </div>
