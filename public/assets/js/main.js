@@ -56,7 +56,6 @@ function setHoliDays(date) {
 $(function () {
     $("#leave_type_id")
         .on("change", function () {
-            // var type = $(this).children("option:selected").val();
             var type = $("#leave_type_id").val();
 
             $("#from, #to").datepicker("destroy");
