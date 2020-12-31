@@ -45,7 +45,7 @@ class HolidayController extends Controller
 
         $holiday->save();
 
-        return redirect('/admin/holidayadd')->with('success' , 'Holiday added.');
+        return redirect('/holidays/create')->with('success' , 'Holiday added.');
     }
 
     /**
@@ -87,7 +87,7 @@ class HolidayController extends Controller
 
         $holiday->save();
 
-        return redirect('/admin/holidaylist')->with('success', 'Holiday Updated.');
+        return redirect('/holidays')->with('success', 'Holiday Updated.');
 
     }
 
@@ -102,6 +102,6 @@ class HolidayController extends Controller
         $holiday = Holiday::find($id);
         $holiday->delete();
 
-        return redirect('/admin/holidaylist')->with('error', 'Holiday Deleted.');
+        return redirect('/holidays')->with('error', 'Holiday Deleted.');
     }
 }

@@ -23,7 +23,7 @@
                     <div class="card-body">
 
                         <form method="post" action="{{ route('admins.update', $user->id) }}">
-                            @method('POST')
+                            @method('PATCH')
                             @csrf
 
                             <div class="row">

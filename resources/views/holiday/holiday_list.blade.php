@@ -50,8 +50,13 @@
                                         href="{{ route('holidays.edit', $holiday->id)}}">Edit</a>
                                 </td>
                                 <td>
-                                    <a class="btn btn-danger btn-block btn-sm"
-                                        href="{{ route('holidays.destroy', $holiday->id)}}">Delete</a>
+                                    <form action="{{ route('holidays.destroy', $holiday->id)}}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <input class="btn btn-danger btn-block btn-sm" role="button" type="submit"
+                                            value="Delete">
+                                    </form>
+
                                 </td>
                             </tr>
                             @endforeach
