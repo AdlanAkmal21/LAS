@@ -19,6 +19,8 @@
                     <h1 class="h3 mb-0 text-gray-800">Application List Page</h1>
                 </div>
 
+                @isset(Auth::user()->leave)
+
                 <h4 class="text-muted font-weight-lighter pt-2">Active Leave Application</h4>
                 <div class="table-responsive-lg">
                     <table class="table table-bordered table-sm">
@@ -135,6 +137,18 @@
                     </table>
                 </div>
                 {{ $medicals->links() }}
+
+                @endisset
+
+                @empty(Auth::user()->leave)
+                <div class="card shadow mb-3">
+                    <div class="card-body">
+                        <h4 class="display-6" style="text-align: center;">
+                            Leave Record is Not Found!
+                        </h4>
+                    </div>
+                </div>
+                @endempty
 
 
             </div><!-- End Page Content -->

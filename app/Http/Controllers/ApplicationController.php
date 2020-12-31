@@ -49,15 +49,15 @@ class ApplicationController extends Controller
     public function list()
     {
         $actives         = LeaveApplication::where('user_id', Auth::id())
-                                            ->where('application_status_id','!=',3)
+                                            ->where('application_status_id','!=',3)//Approved & Pending
                                             ->where('leave_type_id','!=',2)
                                             ->where('to', '>=', Carbon::today())
                                             ->paginate(5);
 
         $pasts           = LeaveApplication::where('user_id', Auth::id())
-                                            ->where('to', '<', Carbon::today())
-                                            ->where('application_status_id','!=',1)
                                             ->where('leave_type_id', '!=', 2)
+                                            ->where('to', '<', Carbon::today())
+                                            ->orwhere('application_status_id','=','3')
                                             ->paginate(5);
 
         $medicals         = LeaveApplication::where('user_id', Auth::id())

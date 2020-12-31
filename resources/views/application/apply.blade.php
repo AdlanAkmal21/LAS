@@ -120,7 +120,6 @@
                         </h4>
                     </div>
                 </div>
-
                 @endempty
 
 
