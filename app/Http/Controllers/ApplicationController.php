@@ -72,7 +72,7 @@ class ApplicationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function apply()
     {
         $user            = User::find(Auth::id());
         $leave           = LeaveDetail::where('user_id', $user->id)->first();
@@ -248,7 +248,7 @@ class ApplicationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    
+
      public function adminAppShow($id)
     {
         $application    = LeaveApplication::find($id);

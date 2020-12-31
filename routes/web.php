@@ -5,7 +5,6 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\HolidayController;
-use App\Http\Controllers\MailController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -41,17 +40,17 @@ Route::get('/approver/dashboard', [UserController::class, 'index'])->middleware(
 
 
 //Applications
-Route::get('application/apply', [ApplicationController::class, 'create'])->name('applications.create');
+// Route::get('application/apply', [ApplicationController::class, 'create'])->name('applications.create');
 Route::get('application/adminshow/{id}', [ApplicationController::class, 'adminAppShow'])->name('applications.adminAppShow');
 Route::get('application/list', [ApplicationController::class, 'list'])->name('applications.list');
-Route::get('application/delete/{id}', [ApplicationController::class,'destroy'])->name('applications.destroy');
+// Route::get('application/delete/{id}', [ApplicationController::class,'destroy'])->name('applications.destroy');
 
 
 //Admins
-Route::get('admin/holidayadd', [HolidayController::class, 'create'])->name('holidays.create');
-Route::get('admin/holidaylist', [HolidayController::class, 'index'])->name('holidays.index');
-Route::get('admin/holidayedit/{id}', [HolidayController::class, 'edit'])->name('holidays.edit');
-Route::get('admin/holidaylist/delete/{id}', [HolidayController::class,'destroy'])->name('holidays.destroy');
+// Route::get('admin/holidayadd', [HolidayController::class, 'create'])->name('holidays.create');
+// Route::get('admin/holidaylist', [HolidayController::class, 'index'])->name('holidays.index');
+// Route::get('admin/holidayedit/{id}', [HolidayController::class, 'edit'])->name('holidays.edit');
+// Route::get('admin/holidaylist/delete/{id}', [HolidayController::class,'destroy'])->name('holidays.destroy');
 
 Route::get('report/overview', [ReportController::class, 'overview'])->name('report.overview');
 Route::get('report/individual', [ReportController::class, 'individual'])->name('report.individual');
@@ -62,7 +61,7 @@ Route::get('admin/employeelist',[AdminController::class, 'employeelist'])->name(
 Route::get('admin/employeeshow/{id}',[AdminController::class, 'show'])->name('admins.empshow');
 Route::get('admin/employeelist/delete/{id}',[AdminController::class, 'destroy'])->name('admins.delete');
 Route::get('admin/employeeedit/{id}',[AdminController::class, 'edit'])->name('admins.empedit');
-Route::post('admin/employeeedit/{id}',[AdminController::class, 'update'])->name('admins.update');
+// Route::post('admin/employeeedit/{id}',[AdminController::class, 'update'])->name('admins.update');
 
 Route::get('admin/applicationlist',[AdminController::class, 'applicationlist'])->name('admins.applicationlist');
 
@@ -71,9 +70,9 @@ Route::get('approver/approverlist/{id}',[UserController::class, 'approverlist'])
 Route::get('approver/applicantlist/{id}', [UserController::class, 'applicantlist'])->name('users.applicantlist');
 Route::get('approver/approve/{id}', [UserController::class, 'approve'])->name('users.approve');
 Route::get('approver/reject/{id}', [UserController::class, 'reject'])->name('users.reject');
-Route::get('employee/employeedetail/{id}', [UserController::class ,'show'])->name('users.show');
+// Route::get('employee/employeedetail/{id}', [UserController::class ,'show'])->name('users.show');
 
-//Change Password
+//Change Passwordphp
 
 Route::get('change-password', [ResetPasswordController::class , 'change_page'])->name('change_page');
 Route::post('change-password', [ResetPasswordController::class , 'change'])->name('users.change_password');
@@ -84,11 +83,6 @@ Route::post('forgot-password', [ForgotPasswordController::class , 'postEmail'])-
 
 Route::get('forgot-reset-password/{token}', [ForgotPasswordController::class , 'reset_page']);
 Route::post('forgot-reset-password', [ForgotPasswordController::class , 'reset'])->name('forgot.reset');
-
-//Mail Controller
-Route::post('apply-mail', [MailController::class , 'postApply'])->name('mail.postApply');
-Route::post('approval-mail', [MailController::class , 'postApproval'])->name('mail.postApproval');
-
 
 //Notification
 Route::get('user/notifications', [UserController::class, 'notifications'])->name('users.notifications');

@@ -80,7 +80,7 @@
 
     <!-- Nav Item - Charts -->
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('applications.create')}}">
+        <a class="nav-link" href="{{ route('applications.apply')}}">
             <i class="fas fa-fw fa-id-card"></i>
             <span>Apply Leave</span></a>
     </li>
