@@ -17,9 +17,8 @@
                 </div>
 
                 <div class="table-responsive-lg">
-                    <table
-                        class="table table-bordered table-light table-hover table-striped table-responsive-lg container small">
-                        <thead>
+                    <table class="table table-bordered table-striped container small">
+                        <thead class="table-dark">
                             <tr>
                                 <th>#</th>
                                 <th>Employee Name</th>

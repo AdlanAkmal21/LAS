@@ -28,7 +28,7 @@
                 </span>
 
                 <div class="table-responsive-lg">
-                    <table class="table table-sm table-bordered table-hover table-striped container small">
+                    <table class="table table-sm table-bordered table-striped container small">
                         <thead class="table-dark">
                             <tr class="d-flex">
                                 <th class="col-1">#</th>
@@ -59,8 +59,12 @@
 
                                             @if($user->emp_status_id != 2)
                                             <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item text-danger"
-                                                href="{{ route('admins.delete', $user->id)}}">Resign</a>
+                                            <form action="{{ route('admins.delete', $user->id)}}" method="POST">
+                                                @csrf
+                                                <input class="dropdown-item text-danger" role="button" type="submit"
+                                                    value="Resign">
+                                            </form>
+
                                             @endif
                                         </div>
                                     </div>

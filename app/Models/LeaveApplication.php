@@ -37,4 +37,9 @@ class LeaveApplication extends Model
         return $this->belongsTo('App\Models\RefLeaveType', 'leave_type_id', 'id');
     }
 
+    public function file()
+    {
+        return $this->hasOne('App\Models\File', 'application_id', 'id');
+    }
+
 }

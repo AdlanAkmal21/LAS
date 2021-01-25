@@ -169,12 +169,16 @@ trait LeaveTrait{
         $DaysperAnnualLeave     = 365/14;
         $date_joined            = Carbon::parse($employee->date_joined);
         $year_end               = Carbon::parse(Carbon::now()->endOfYear());
-        $servicedays            = $year_end->diffInDays($date_joined);
+        $servicedays            = ($year_end->diffInDays($date_joined))+1;
         $annual_e               = $servicedays/$DaysperAnnualLeave;
+
+        $rounded                = round($annual_e, 1);	//Round off to nearest 0.0
+        $entitlement            = round($rounded); //Round off to whole number
+
         // //For Pushing Input Into DB (Leaves Table)
         $leave                  = new LeaveDetail();
         $leave->user_id         = $employee->user_id;
-        $leave->annual_e        = $annual_e;
+        $leave->annual_e        = $entitlement;
         $leave->carry_over      = 0;
         $leave->taken_so_far    = 0;
         //Calculate Total and Balance Leaves
@@ -186,9 +190,9 @@ trait LeaveTrait{
 
     public function dashboardAdmins()
     {
-        $en = CarbonImmutable::now()->locale('en_MY');
-        $start = $en->startOfWeek(Carbon::SUNDAY)->format('Y-m-d');
-        $end = $en->endOfWeek(Carbon::SATURDAY)->format('Y-m-d');
+        $today = Carbon::today()->locale('en_MY');
+        $start  = $today->startOfWeek(Carbon::MONDAY)->format('Y-m-d');
+        $end    = $today->endOfWeek(Carbon::FRIDAY)->format('Y-m-d');
 
         //Employees
         $employees                      = User::where('id','!=', 1)->get();
@@ -196,13 +200,48 @@ trait LeaveTrait{
                                             ->where('emp_status_id', 2)
                                             ->get();
 
-        $offduty                        = User::join('leave_applications','users.id','=','leave_applications.user_id')
-                                            ->where('leave_applications.application_status_id', 2)
-                                            ->where('leave_applications.to','>=', Carbon::today())
-                                            ->get();
+        $offduty                        = LeaveApplication::where(function ($query) use ($start, $end)
+                                                            {
+                                                                $query->where('application_status_id', 2)
+                                                                      ->where('from','>=', $start)
+                                                                      ->where('from','<=', $end);
+                                                            })
+                                                            ->orWhere(function($query) use ($start, $end)
+                                                            {
+                                                                $query->where('application_status_id', 2)
+                                                                      ->where('from','<', $start)
+                                                                      ->where('to','>', $end);
+                                                            })
+                                                            ->orWhere(function($query) use ($start, $today)
+                                                            {
+                                                                $query->where('application_status_id', 2)
+                                                                      ->where('to','>=', $start)
+                                                                      ->where('to','<', $today);
+                                                            })
+                                                            ->paginate(5);
+
+        $offduty_count                  = LeaveApplication::where(function ($query) use ($start, $end)
+                                                            {
+                                                                $query->where('application_status_id', 2)
+                                                                      ->where('from','>=', $start)
+                                                                      ->where('from','<=', $end);
+                                                            })
+                                                            ->orWhere(function($query) use ($start, $end)
+                                                            {
+                                                                $query->where('application_status_id', 2)
+                                                                      ->where('from','<', $start)
+                                                                      ->where('to','>', $end);
+                                                            })
+                                                            ->orWhere(function($query) use ($start, $today)
+                                                            {
+                                                                $query->where('application_status_id', 2)
+                                                                      ->where('to','>=', $start)
+                                                                      ->where('to','<', $today);
+                                                            })
+                                                            ->distinct('user_id')
+                                                            ->count();
 
         $employees_count                = $employees->count();
-        $offduty_count                  = $offduty->count();
         $male_count                     = EmployeeDetail::where('gender_id',1)->count();
         $female_count                   = EmployeeDetail::where('gender_id',2)->count();
         $admin_count                    = User::where('role_id',1)->count();

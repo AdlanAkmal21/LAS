@@ -11,6 +11,17 @@ class ReportController extends Controller
 {
     use LeaveTrait;
 
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function overview()
     {
         $array = $this->dashboardAdmins();

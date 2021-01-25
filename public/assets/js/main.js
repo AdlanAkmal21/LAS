@@ -1,6 +1,6 @@
 //Loading Screen
 $(window).on("load", function () {
-    $(".loader-wrapper").fadeOut("slow");
+    $("body").addClass("loaded");
 });
 
 //Date Picker
@@ -211,9 +211,13 @@ var datepicked = function () {
         days = days - total_holidays;
 
         if (days == 1) {
-            $("#half_day").prop("disabled", false);
+            $("#morning").prop("disabled", false);
+            $("#evening").prop("disabled", false);
         } else {
-            $("#half_day").prop("disabled", true);
+            $("#morning").prop("disabled", true);
+            $("#evening").prop("disabled", true);
+            $("#morning").prop("checked", false);
+            $("#evening").prop("checked", false);
         }
 
         days_taken.val(days);

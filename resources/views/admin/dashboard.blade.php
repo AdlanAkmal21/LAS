@@ -25,7 +25,7 @@
                             </div>
                             <div class="card-body">
                                 <h6 id="date"></h6>
-                                <h1 id="clock" class="display-4"></h1>
+                                <h1 id="clock" class="display-4" style="color:#222222"></h1>
                                 <p>Welcome! Here's a few functions to get you started.</p>
 
                                 <div class="row">
@@ -172,48 +172,59 @@
                     <div class="col-xl-12 col-lg-12 mb-2 mb-xl-0">
                         <div class="card shadow mb-4">
                             <!-- Card Header - Dropdown -->
-                            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                <h6 class="m-0 font-weight-bold text-primary">Off-Duty (This Week)
-                                    <span style="font-size: 12px; color:gray;">[{{$offduty_count}} Employees]</span>
+                            <div class="card-header">
+                                <h6 class=" m-0 font-weight-bold text-primary">Off-Duty (This Week)
                                 </h6>
                             </div>
                             <!-- Card Body -->
                             <div class="card-body small">
                                 @if($offduty_count != 0)
-                                <ul class="list-group pre-scrollable" style="height:200px;">
-                                    @foreach ($offduty as $off)
-                                    <li class="list-group-item">
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="row">
-                                                    <div class="col-xl-8">
-                                                        <div class="row pl-2"><u>Name</u></div>
-                                                        <div class="row pl-2"><b>{{$off->name}}</b></div>
-                                                    </div>
-                                                    <div class="col-xl-4">
-                                                        <div class="row pl-2"><u>Period</u></div>
-                                                        <div class="row pl-2">From:</div>
-                                                        <div class="row pl-2"><b>{{$off->from}}</b></div>
-                                                        <div class="row pl-2">To:</div>
-                                                        <div class="row pl-2"><b>{{$off->to}}</b></div>
-                                                    </div>
-                                                </div>
-                                            </div>
+
+                                <div class="mb-3">
+
+                                    <div class="form-row pl-1">
+                                        <div class="col-xl-6 col-lg-6 col-md-6">
+                                            <label>Number of Off-Duty Employees:</label>
+                                            <span class="pl-2 font-weight-bolder">{{$offduty_count}}</span>
                                         </div>
-                                    </li>
-                                    @endforeach
-                                </ul>
+                                        <div class="col-xl-6 col-lg-6 col-md-6">
+                                            <label>Number of Active
+                                                Application(s):</label>
+                                            <span class="pl-2 font-weight-bolder">{{$offduty->count()}}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive-lg">
+                                    <table class="table table-sm table-bordered table-striped container small">
+                                        <thead>
+                                            <tr class="d-flex">
+                                                <th class="col-1">#</th>
+                                                <th class="col-5">Employee Name</th>
+                                                <th class="col-3">From</th>
+                                                <th class="col-3">To</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($offduty as $key => $off)
+                                            <tr class="d-flex">
+                                                <td class="col-1">{{$offduty->firstItem()+$key}}</td>
+                                                <td class="col-5">{{$off->user->name}}</td>
+                                                <td class="col-3">{{$off->from}}</td>
+                                                <td class="col-3">{{$off->to}}</td>
+                                            </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                                {{ $offduty->links() }}
+
                                 @else
-                                <ul class="list-group" style="height:200px;">
-                                    <li class="list-group-item">
-                                        <div class="font-weight-bold text-uppercase mb-1">
-                                            <i class="fas fa-user-check"></i>
-                                            <span class="text-success pl-3">
-                                                All Employees Are Working
-                                            </span>
-                                        </div>
-                                    </li>
-                                </ul>
+                                <div class="font-weight-bold text-uppercase text-center mb-1">
+                                    <span>
+                                        All Employees Are Working
+                                    </span>
+                                </div>
                                 @endif
                             </div>
                         </div>

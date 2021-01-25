@@ -13,30 +13,35 @@
                 <!-- Begin Page Content -->
 
                 <div class="d-sm-flex align-items-center justify-content-between">
-                    <h1 class="h3 mb-0 text-gray-800">Employees Applications List (Overall)</h1>
+                    <h1 class="h3 mb-0 text-gray-800">Applications List (All)</h1>
                 </div>
-                <p>Click on the row to view application details.</p>
                 <div class="table-responsive-lg">
-                    <table
-                        class="table table-sm table-dark table-bordered table-hover table-responsive-lg container small">
-                        <thead>
+                    <table class="table table-sm table-bordered table-striped container small">
+                        <thead class="table-dark">
                             <tr class="d-flex">
                                 <th class="col-1">#</th>
-                                <th class="col-4">Employee Name</th>
+                                <th class="col-3">Employee Name</th>
                                 <th class="col-2">Leave Type</th>
                                 <th class="col-3">Applied At</th>
                                 <th class="col-2">Status</th>
+                                <th class="col-1">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($applications as $key => $application)
-                            <tr class="table-tr d-flex"
-                                data-url="{{ route('applications.adminAppShow', $application->leave_applications_id) }}">
+                            <tr class="d-flex">
                                 <td class="col-1">{{ $applications->firstItem() + $key }}.</td>
-                                <td class="col-4">{{ $application->user->name }}</td>
+                                <td class="col-3">
+                                    <a
+                                        href="{{ route('admins.empshow', $application->user->id)}}">{{ $application->user->name }}</a>
+                                </td>
                                 <td class="col-2">{{ $application->refLeaveType->leave_type_name }}</td>
                                 <td class="col-3">{{ $application->created_at }}</td>
                                 <td class="col-2">{{ $application->refAppStatus->application_status_name }}</td>
+                                <td class="col-1">
+                                    <a class="btn btn-primary"
+                                        href="{{ route('applications.adminAppShow', $application->leave_applications_id) }}">Show</a>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

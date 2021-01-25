@@ -28,6 +28,8 @@ class ApplicationPostRequest extends FormRequest
             'from'          =>'required|date_format:d/m/Y',
             'to'            =>'required|date_format:d/m/Y',
             'reason'        =>'max:100',
+            'file'          =>'mimes:jpeg,png,jpg,pdf,docx,xsl,xlsx|max:5120',
+
         ];
     }
 
@@ -40,6 +42,8 @@ class ApplicationPostRequest extends FormRequest
             'to.required'               => 'Please enter to date',
             'to.date_format'            => 'To must be in dd/mm/yyyy format!',
             'reason.max'                => 'You have reached the maximum characters (100) for reason.',
+            'file.mimes'                => 'Uploaded file must be in the format of JPEG,JPG,PNG,PDF,DOCX,XSL or XSL.',
+            'file.max'                  => 'Uploaded file cannot be more than 5MB.',
         ];
     }
 }

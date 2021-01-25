@@ -8,7 +8,7 @@ use Laracasts\Utilities\JavaScript\JavaScriptFacade;
 use App\Http\Requests\ApplicationEditRequest;
 use App\Http\Requests\ApplicationPostRequest;
 use App\Mail\NewApplicationMail;
-
+use App\Models\File;
 use App\Models\User;
 use App\Models\LeaveDetail;
 use App\Models\LeaveApplication;
@@ -19,6 +19,7 @@ use App\Notifications\NewApplicationAlert;
 use Carbon\Carbon;
 
 use App\Traits\LeaveTrait;
+use Illuminate\Support\Facades\Storage;
 
 class ApplicationController extends Controller
 {
@@ -41,28 +42,26 @@ class ApplicationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        //
-    }
-
     public function list()
     {
         $actives         = LeaveApplication::where('user_id', Auth::id())
                                             ->where('application_status_id','!=',3)//Approved & Pending
                                             ->where('leave_type_id','!=',2)
                                             ->where('to', '>=', Carbon::today())
-                                            ->paginate(5);
+                                            ->paginate(5, ['*'], 'actives');
 
         $pasts           = LeaveApplication::where('user_id', Auth::id())
                                             ->where('leave_type_id', '!=', 2)
                                             ->where('to', '<', Carbon::today())
                                             ->orwhere('application_status_id','=','3')
-                                            ->paginate(5);
+                                            ->paginate(5, ['*'], 'pasts');
 
         $medicals         = LeaveApplication::where('user_id', Auth::id())
                                             ->where('leave_type_id', 2)
-                                            ->paginate(5);
+                                            ->paginate(5, ['*'], 'medicals');
+
+        // dd($pasts);
+
 
         return view('application.application_list' , compact('actives', 'pasts', 'medicals'));
     }
@@ -95,8 +94,8 @@ class ApplicationController extends Controller
      */
     public function store(ApplicationPostRequest $request)
     {
-        $user                    = User::find(Auth::id());
-        $leave                   = LeaveDetail::where('user_id', $user->id)->first();
+        $user                       = Auth::user();
+        $leave                      = LeaveDetail::where('user_id', $user->id)->first();
 
         $from                       = Carbon::parse(Carbon::createFromFormat('d/m/Y', $request->get('from'))->format('Y-m-d'));
         $to                         = Carbon::parse(Carbon::createFromFormat('d/m/Y', $request->get('to'))->format('Y-m-d'));
@@ -104,19 +103,20 @@ class ApplicationController extends Controller
         $days_taken                 = $request->get('days_taken');
         $half_day                   = $request->get('half_day');
 
-        if ($half_day == 1) {
+        if ($half_day != null) {
             $days_taken = $days_taken - (0.5);
         }
 
         $applications_temp          = LeaveApplication::where('user_id', $user->id)->where('application_status_id',1)->where('leave_type_id',1)->sum('days_taken');
         $applications_temp_sum      = $applications_temp + $days_taken;
 
-            //Medical & Emergency Leave & Unrecorded Leave
+
             $application                = new LeaveApplication();
             $application->user_id       = $user->id;
             $application->leave_id      = $leave->id;
             $application->leave_type_id = $request->get('leave_type_id');
 
+            //Medical & Emergency Leave & Unrecorded Leave
             if($application->leave_type_id == 2 || $application->leave_type_id == 3 || $application->leave_type_id == 4 ) //Medical or Emergency or Unrecorded
             {
                 $application->from                  = $from;
@@ -125,22 +125,65 @@ class ApplicationController extends Controller
                 $application->half_day              = $half_day;
                 $application->reason                = $request->get('reason');
 
-                //Emergency Leave must have reason.
-                if ($application->leave_type_id == 3) {
-                    if ($request->get('reason') == null) {
-                        return back()->withInput()->with('error', 'Emergency Leave: Please State Your Reason.');
+
+                //Medical Leave Auto-Approved
+                if ($application->leave_type_id == 2)
+                {
+                    if($request->file('file') == null){
+                        return back()->withInput()->with('error', 'Medical Leave: Please attach your MC.');
+                    }
+                    else {
+                        $application->application_status_id = 2;
                     }
                 }
 
-                //Medical Leave Auto-Approved
-                if ($application->leave_type_id == 2) {
-                    $application->application_status_id = 2;
-                }
-                else{
+                //Emergency Leave must have reason.
+                if ($application->leave_type_id == 3)
+                {
+                    if ($request->get('reason') == null) {
+                        return back()->withInput()->with('error', 'Emergency Leave: Please State Your Reason.');
+                    }
                     $application->application_status_id = 1;
                 }
 
+                //Unrecorded Leave
+                if ($application->leave_type_id == 4)
+                {
+                    $application->application_status_id = 1;
+                }
+
+
                 $application->save();
+
+                //File Upload - Medical, Emergency & Unrecorded
+                if($file = $request->file('file')){
+
+                    $extension = $file->extension();
+                    $filename = "$application->id.$extension";
+
+                    $newFile = new File();
+                    $newFile->user_id        = $user->id;
+                    $newFile->application_id = $application->id;
+                    $newFile->filename = $filename;
+
+                    if  ($application->leave_type_id == 2){
+                        $filecategory = 'Medical_Leave_Files';
+                        Storage::putFileAs($filecategory, $file, $filename);
+                        $newFile->filecategory = $filecategory;
+                    }
+                    elseif  ($application->leave_type_id == 3){
+                        $filecategory = 'Emergency_Leave_Files';
+                        Storage::putFileAs($filecategory, $file, $filename);
+                        $newFile->filecategory = $filecategory;
+                    }
+                    elseif  ($application->leave_type_id == 4){
+                        $filecategory = 'Unrecorded_Leave_Files';
+                        Storage::putFileAs($filecategory, $file, $filename);
+                        $newFile->filecategory = $filecategory;
+                    }
+                    $newFile->save();
+                }
+
 
                 $application_id = $application->id;
                 Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
@@ -149,7 +192,8 @@ class ApplicationController extends Controller
 
                 return redirect('/application/list')->with('success', 'Application submitted.');
             }
-            else {
+            else // Annual Leave
+            {
                 if($days_taken<= $leave->balance_leaves)
                 {
                     if($applications_temp_sum <= $leave->balance_leaves) // Check Current Balance Leaves. If sufficient, proceed.
@@ -167,6 +211,26 @@ class ApplicationController extends Controller
                                     $application->application_status_id = 1; //Pending Status
 
                                     $application->save();
+
+                                    //File Upload - Annual
+                                    if($file = $request->file('file')){
+
+                                        $extension = $file->extension();
+                                        $filename = "$application->id.$extension";
+
+                                        $newFile = new File();
+                                        $newFile->user_id        = $user->id;
+                                        $newFile->application_id = $application->id;
+                                        $newFile->filename = $filename;
+
+                                        if  ($application->leave_type_id == 1){
+                                            $filecategory = 'Annual_Leave_Files';
+                                            Storage::putFileAs($filecategory, $file, $filename);
+                                            $newFile->filecategory = $filecategory;
+
+                                        }
+                                        $newFile->save();
+                                    }
 
                                     $application_id = $application->id;
                                     Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
@@ -195,6 +259,26 @@ class ApplicationController extends Controller
                                     $application->application_status_id = 1; // Pending Status
 
                                     $application->save();
+
+                                    //File Upload - Annual
+                                    if($file = $request->file('file')){
+
+                                        $extension = $file->extension();
+                                        $filename = "$application->id.$extension";
+
+                                        $newFile = new File();
+                                        $newFile->user_id        = $user->id;
+                                        $newFile->application_id = $application->id;
+                                        $newFile->filename = $filename;
+
+                                        if  ($application->leave_type_id == 1){
+                                            $filecategory = 'Annual_Leave_Files';
+                                            Storage::putFileAs($filecategory, $file, $filename);
+                                            $newFile->filecategory = $filecategory;
+
+                                        }
+                                        $newFile->save();
+                                    }
 
                                     $application_id = $application->id;
                                     Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
@@ -239,7 +323,19 @@ class ApplicationController extends Controller
         $application    = LeaveApplication::find($id);
         $created_at     = date('d/m/Y (H:i:s)', strtotime($application->created_at));
 
-        return view('application.application_show', compact('application','created_at'));
+        if($application->half_day == 1){
+            $half_day = 'Morning';
+        }
+        else if ($application->half_day == 2){
+            $half_day = 'Evening';
+        }
+        else {
+            $half_day = null;
+        }
+
+        $file = File::where('filename', $application->id)->first();
+
+        return view('application.application_show', compact('application','created_at','half_day','file'));
     }
 
         /**
@@ -254,7 +350,19 @@ class ApplicationController extends Controller
         $application    = LeaveApplication::find($id);
         $created_at     = date('d/m/Y (H:i:s)', strtotime($application->created_at));
 
-        return view('admin.application_show', compact('application','created_at'));
+        if($application->half_day == 1){
+            $half_day = 'Morning';
+        }
+        else if ($application->half_day == 2){
+            $half_day = 'Evening';
+        }
+        else {
+            $half_day = null;
+        }
+
+        $file = File::where('application_id', $application->id)->first();
+
+        return view('admin.application_show', compact('application','created_at','half_day','file'));
     }
 
     /**
@@ -313,9 +421,15 @@ class ApplicationController extends Controller
     public function destroy($id)
     {
         $application = LeaveApplication::find($id);
+
+        if(File::where('application_id', $application->id)->exists()){
+            $file        = File::where('application_id', $application->id)->first();
+            Storage::delete("$file->filecategory/$file->filename");
+            $file->delete();
+        }
+
         $application->delete();
 
-        return redirect('/application/list')->with('error', 'Application removed.');
-
+        return back()->withInput()->with('error', 'Application removed.');
     }
 }

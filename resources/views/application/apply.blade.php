@@ -21,91 +21,98 @@
                 @isset($leave)
                 <p class="small">If you're experiencing any problems, try refreshing the page or re-select the dates.
                 </p>
-                <div class="card">
+                <div class="card shadow-sm mb-4">
                     <div class="card-body">
-                        <form method="post" action="{{ route('applications.store')}}">
+                        <form method="post" action="{{ route('applications.store')}}" enctype="multipart/form-data">
                             @csrf
-                            <div class="form-row">
-                                <div class="col-xl-4">
-                                    <div class="form-group">
-                                        <label class="label" for="name">Employee Name</label>
-                                        <input class="form-control" type="text" name="name" disabled
-                                            placeholder="{{$user->name}}">
-                                    </div>
+
+                            <div class="form-group row">
+                                <label for="name" class="col-sm-2 col-form-label">Employee Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly class="form-control" readonly="readonly" id="name"
+                                        value="{{$user->name}}">
                                 </div>
-                                <div class="col-xl-8">
-                                    <div class="form-group">
-                                        <label class="label" for="leave_type_id">Leave Type</label>
-                                        <select class="form-control" id="leave_type_id" name="leave_type_id">
-                                            <option selected disabled value="0">Select Leave Type</option>
-                                            @foreach ($refLeaveTypes as $refLeaveType)
-                                            <option @if(old('leave_type_id')==$refLeaveType->id
-                                                )
-                                                selected
-                                                @endif
-                                                value="{{$refLeaveType->id}}">{{$refLeaveType->leave_type_name}}
-                                            </option>
-                                            @endforeach
-                                        </select>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="leave_type_id" class="col-sm-2 col-form-label">Leave Type</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" id="leave_type_id" name="leave_type_id">
+                                        <option selected disabled value="0">Select Leave Type</option>
+                                        @foreach ($refLeaveTypes as $refLeaveType)
+                                        <option @if(old('leave_type_id')==$refLeaveType->id
+                                            )
+                                            selected
+                                            @endif
+                                            value="{{$refLeaveType->id}}">{{$refLeaveType->leave_type_name}}
+                                        </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="from" class="col-sm-2 col-form-label">Date</label>
+                                <div class="col-sm-10 form-inline">
+                                    <div class="form-group mr-2 flex-fill">
+                                        <input type="text" class="form-control flex-fill" name="from" id="from"
+                                            placeholder="Select From Date (dd/mm/yyyy) .." value="{{ old('from') }}">
+                                    </div>
+                                    <div class="form-group mr-2 flex-fill">
+                                        <input type="text" class="form-control flex-fill" name="to" id="to"
+                                            placeholder="Select To Date (dd/mm/yyyy) .." value="{{ old('to') }}">
                                     </div>
                                 </div>
                             </div>
 
-
-
-                            <div class="form-row">
-                                <div class="col-xl-4">
-                                    <div class="form-group">
-                                        <label class="label" for="from">From
-                                            <span class="text-muted"
-                                                style="font-size: 10px;">(dd/mm/yyyy)</span></label>
-                                        <input class="form-control" type="text" placeholder="Select From Date..."
-                                            name="from" id="from" value="{{ old('from') }}">
-                                    </div>
+                            <div class="form-group row">
+                                <label for="days_taken" class="col-sm-2 col-form-label">Days Taken</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="text" id="days_taken" name="days_taken"
+                                        placeholder="Please select dates." readonly="readonly"
+                                        value="{{ old('days_taken') }}">
                                 </div>
+                            </div>
 
-                                <div class="col-xl-4">
-                                    <div class="form-group">
-                                        <label class="label" for="to">To
-                                            <span class="text-muted"
-                                                style="font-size: 10px;">(dd/mm/yyyy)</span></label>
-                                        <input class="form-control" type="text" placeholder="Select To Date..."
-                                            name="to" id="to" value="{{ old('to') }}">
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-4">
-                                    <div class="form-group">
-                                        <label class="label" for="days_taken">Days Taken</label>
-                                        <input class="form-control" type="text" id="days_taken" name="days_taken"
-                                            readonly="readonly" value="{{ old('days_taken') }}">
+                            <div class="form-group row">
+                                <label for="check" class="col-sm-2 col-form-label">Half Day</label>
+                                <div class="col-sm-10">
+                                    <div id="check" class="form-control border-0">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="half_day" id="morning"
+                                                value="1" disabled>
+                                            <label class="form-check-label" for="morning">Morning</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="half_day" id="evening"
+                                                value="2" disabled>
+                                            <label class="form-check-label" for="evening">Evening</label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-row">
-                                <div class="col-xl-12">
-                                    <div class="form-group">
-                                        <label for="half_day">Half Day</label>
-                                        <input type="checkbox" value="1" id="half_day" disabled name="half_day">
-                                    </div>
+                            <div class="form-group row">
+                                <label for="reason" class="col-sm-2 col-form-label">Reason</label>
+                                <div class="col-sm-10">
+                                    <textarea class="form-control mb-2" name="reason" style="resize:none"
+                                        placeholder="State your reason..">{{ old('reason')}}</textarea>
                                 </div>
                             </div>
 
-                            <div class="form-row">
-                                <div class="col-xl-12">
-                                    <div class="form-group">
-                                        <label class="label" for="reason">Reason</label>
-                                        <input name="reason" style="resize:none" class="form-control"
-                                            placeholder="State your reason.." value="{{ old('reason')}}">
-                                    </div>
+                            <div class="form-group row">
+                                <label for="file" class="col-sm-2 col-form-label">Attachment
+                                    <small>(optional)</small></label>
+                                <div class="col-sm-10">
+                                    <input type="file" name="file" id="file" class="small form-control border-0">
                                 </div>
                             </div>
 
-
-                            <div class="p-t-15">
-                                <button type="submit" class="btn btn-primary">Apply</button>
-                                <button type="reset" class="btn btn-danger">Clear</button>
+                            <div class="form-group row pt-2">
+                                <div class="col-sm-10 offset-sm-2">
+                                    <button type="submit" class="btn btn-primary">Apply</button>
+                                    <button type="reset" class="btn btn-danger">Clear</button>
+                                </div>
                             </div>
                         </form>
                     </div>

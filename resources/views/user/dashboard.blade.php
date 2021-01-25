@@ -25,8 +25,7 @@
                             </div>
                             <div class="card-body">
                                 <h6 id="date"></h6>
-                                <h1 id="clock" class="display-4"></h1>
-
+                                <h1 id="clock" class="display-4" style="color:#222222"></h1>
                                 <p>First time user? Consider changing your password.</p>
                                 <a class="btn btn-warning btn-sm" href="{{ route('change_page')}}">Change
                                     Password</a>

@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\HolidayController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
@@ -40,18 +41,11 @@ Route::get('/approver/dashboard', [UserController::class, 'index'])->middleware(
 
 
 //Applications
-// Route::get('application/apply', [ApplicationController::class, 'create'])->name('applications.create');
 Route::get('application/adminshow/{id}', [ApplicationController::class, 'adminAppShow'])->name('applications.adminAppShow');
 Route::get('application/list', [ApplicationController::class, 'list'])->name('applications.list');
-// Route::get('application/delete/{id}', [ApplicationController::class,'destroy'])->name('applications.destroy');
 
 
 //Admins
-// Route::get('admin/holidayadd', [HolidayController::class, 'create'])->name('holidays.create');
-// Route::get('admin/holidaylist', [HolidayController::class, 'index'])->name('holidays.index');
-// Route::get('admin/holidayedit/{id}', [HolidayController::class, 'edit'])->name('holidays.edit');
-// Route::get('admin/holidaylist/delete/{id}', [HolidayController::class,'destroy'])->name('holidays.destroy');
-
 Route::get('report/overview', [ReportController::class, 'overview'])->name('report.overview');
 Route::get('report/individual', [ReportController::class, 'individual'])->name('report.individual');
 Route::get('report/individual/{id}', [ReportController::class, 'findindividual'])->name('report.findindividual');
@@ -59,21 +53,20 @@ Route::get('report/individual/{id}', [ReportController::class, 'findindividual']
 Route::get('admin/employeeadd', [AdminController::class, 'employeeadd'])->name('admins.employeeadd');
 Route::get('admin/employeelist',[AdminController::class, 'employeelist'])->name('admins.employeelist');
 Route::get('admin/employeeshow/{id}',[AdminController::class, 'show'])->name('admins.empshow');
-Route::get('admin/employeelist/delete/{id}',[AdminController::class, 'destroy'])->name('admins.delete');
+Route::post('admin/employeelist/delete/{id}',[AdminController::class, 'destroy'])->name('admins.delete');
 Route::get('admin/employeeedit/{id}',[AdminController::class, 'edit'])->name('admins.empedit');
-// Route::post('admin/employeeedit/{id}',[AdminController::class, 'update'])->name('admins.update');
 
 Route::get('admin/applicationlist',[AdminController::class, 'applicationlist'])->name('admins.applicationlist');
+
+Route::get('/file/filelist', [FileController::class, 'index'])->name('file.index');
 
 //Employees & Approvers
 Route::get('approver/approverlist/{id}',[UserController::class, 'approverlist'])->name('users.approverlist');
 Route::get('approver/applicantlist/{id}', [UserController::class, 'applicantlist'])->name('users.applicantlist');
 Route::get('approver/approve/{id}', [UserController::class, 'approve'])->name('users.approve');
 Route::get('approver/reject/{id}', [UserController::class, 'reject'])->name('users.reject');
-// Route::get('employee/employeedetail/{id}', [UserController::class ,'show'])->name('users.show');
 
-//Change Passwordphp
-
+//Change Password
 Route::get('change-password', [ResetPasswordController::class , 'change_page'])->name('change_page');
 Route::post('change-password', [ResetPasswordController::class , 'change'])->name('users.change_password');
 
@@ -85,4 +78,5 @@ Route::get('forgot-reset-password/{token}', [ForgotPasswordController::class , '
 Route::post('forgot-reset-password', [ForgotPasswordController::class , 'reset'])->name('forgot.reset');
 
 //Notification
-Route::get('user/notifications', [UserController::class, 'notifications'])->name('users.notifications');
+Route::get('user/readNotifications', [UserController::class, 'readNotifications'])->name('users.readNotifications');
+Route::get('user/viewNotifications', [UserController::class, 'viewNotifications'])->name('users.viewNotifications');

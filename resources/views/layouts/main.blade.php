@@ -13,8 +13,12 @@
 
     @yield('content')
 
-    <div class="loader-wrapper">
-        <span class="loader"><span class="loader-inner"></span></span>
+    <div id="loader-wrapper">
+        <div id="loader"></div>
+
+        <div class="loader-section section-left"></div>
+        <div class="loader-section section-right"></div>
+
     </div>
 
     @include('partials._script')

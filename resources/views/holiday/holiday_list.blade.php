@@ -29,9 +29,8 @@
                 </span>
 
                 <div class="table-responsive-lg">
-                    <table
-                        class="table table-light table-bordered table-hover table-striped table-responsive-lg container small">
-                        <thead>
+                    <table class="table table-sm table-bordered table-striped container small">
+                        <thead class="table-dark">
                             <tr>
                                 <th>#</th>
                                 <th>Holiday Name</th>

@@ -61,19 +61,19 @@ class UserController extends Controller
                                         ->select('employee_details.*','users.*','leave_applications.*','leave_applications.id as pending_id')
                                         ->where('employee_details.approver_id', $approver->id)
                                         ->where('application_status_id', 1)
-                                        ->paginate(5);
+                                        ->paginate(5, ['*'], 'pendings');
         $approved   = LeaveApplication::join('users','leave_applications.user_id','=','users.id')
                                         ->join('employee_details','users.id','=','employee_details.user_id')
                                         ->select('employee_details.*','users.*','leave_applications.*','leave_applications.id as approved_id')
                                         ->where('employee_details.approver_id', $approver->id)
                                         ->where('application_status_id', 2)
-                                        ->paginate(5);
+                                        ->paginate(5, ['*'], 'approved');
         $rejected   = LeaveApplication::join('users','leave_applications.user_id','=','users.id')
                                         ->join('employee_details','users.id','=','employee_details.user_id')
                                         ->select('employee_details.*','users.*','leave_applications.*','leave_applications.id as rejected_id')
                                         ->where('employee_details.approver_id', $approver->id)
                                         ->where('application_status_id', 3)
-                                        ->paginate(5);
+                                        ->paginate(5, ['*'], 'rejected');
 
 
         return view('user.approver_list', compact('pendings','approved','rejected'));
@@ -118,7 +118,6 @@ class UserController extends Controller
      */
     public function approve($app_id)
     {
-        // dd($app_id);
         $application                           = LeaveApplication::find($app_id); //$app_id is Application ID
         $application->application_status_id    = 2;
         $application->approval_date            = Carbon::now();
@@ -161,10 +160,15 @@ class UserController extends Controller
         return redirect(url()->previous())->with('error', 'Application rejected.');
     }
 
-    public function notifications()
+    public function readNotifications()
     {
-       Auth()->user()->unreadNotifications->markAsRead();
+        Auth()->user()->unreadNotifications->markAsRead();
 
+        return redirect()->route('users.viewNotifications');
+    }
+
+    public function viewNotifications()
+    {
        return view('user.notifications',[
            'notifications' => Auth()->user()->notifications()->paginate(5)
        ]);
