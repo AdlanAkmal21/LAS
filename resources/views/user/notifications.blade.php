@@ -15,7 +15,11 @@
                 <div class="card my-3">
                     <div class="card-header"><b>{{ __('Notifications') }}</b>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body text-center">
+
+                        @if ($notifications->isEmpty())
+                        <span class="text-muted">No Notifications Available</span>
+                        @else
                         <ul class="list-group">
                             @foreach ($notifications as $notification)
                             <li class="list-group-item">
@@ -30,7 +34,8 @@
                                     </div>
                                     <div class="col-xl-3 col-lg-3">
                                         <a href="{{ route('users.approverlist', Auth::id()) }}"
-                                            class="btn btn-warning btn-block">Go to approver's list</a><br>
+                                            class="btn btn-warning btn-block">Go to
+                                            approver's list</a><br>
                                     </div>
                                     @else
                                     <div class="col-xl-9 col-lg-9">
@@ -41,7 +46,8 @@
                                     </div>
                                     <div class="col-xl-3 col-lg-3">
                                         <a href="{{ route('users.approverlist', Auth::id()) }}"
-                                            class="btn btn-info btn-block">Go to approver's list</a><br>
+                                            class="btn btn-info btn-block">Go to approver's
+                                            list</a><br>
                                     </div>
                                     @endif
                                 </div>
@@ -67,10 +73,14 @@
                             </li>
                             @endforeach
                         </ul>
+                        @endif
+
                     </div>
+                    @if ($notifications->isNotEmpty())
                     <div class="card-footer">
                         {{$notifications->links()}}
                     </div>
+                    @endif
                 </div>
 
 

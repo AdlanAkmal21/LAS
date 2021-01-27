@@ -60,7 +60,6 @@ class ApplicationController extends Controller
                                             ->where('leave_type_id', 2)
                                             ->paginate(5, ['*'], 'medicals');
 
-        // dd($pasts);
 
 
         return view('application.application_list' , compact('actives', 'pasts', 'medicals'));
@@ -401,10 +400,11 @@ class ApplicationController extends Controller
         $days_taken                 = $request->get('days_taken');
         $half_day                   = $request->get('half_day');
 
-        if ($half_day == 1) {
+        if ($half_day != null) {
             $days_taken = $days_taken - (0.5);
         }
 
+        $application->half_day      = $half_day;
         $application->days_taken    = $days_taken;
         $application->reason        =  $request->get('reason');
         $application->save();

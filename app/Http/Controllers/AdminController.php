@@ -42,8 +42,8 @@ class AdminController extends Controller
     public function index()
     {
         $this->checkPendingApplication();
-        $this->employeeLeaveStatus();
-        $array = $this->dashboardAdmins();
+        $array  = $this->dashboardAdmins();
+        $array2 = $this->off_duty();
 
         $employees_count                = $array['employees_count'];
         $applications_count             = $array['applications_count'];
@@ -51,8 +51,8 @@ class AdminController extends Controller
         $holidays_count                 = $array['holidays_count'];
         $resigned_count                 = $array['resigned_count'];
         $taken_so_far_sum               = $array['taken_so_far_sum'];
-        $offduty                        = $array['offduty'];
-        $offduty_count                  = $array['offduty_count'];
+        $offduty                        = $array2['offduty'];
+        $offduty_count                  = $array2['offduty_count'];
 
         return view(
             'admin.dashboard',
@@ -147,6 +147,7 @@ class AdminController extends Controller
         $employee->gender_id     = $request->get('gender_id');
         $employee->date_joined   = Carbon::createFromFormat('d/m/Y', $request->get('date_joined'))->format('Y-m-d');
         $employee->approver_id   = $request->get('approver_id');
+        $employee->last_carry_over = Carbon::now()->year;
         $employee->save();
 
         $this->createLeave($employee->id);
@@ -205,7 +206,7 @@ class AdminController extends Controller
 
         if((User::where('email', $request->get('email'))->exists()) && ($user->email != $request->get('email')) )
         {
-            return redirect('/admin/employeelist')->with('error', 'Email exists! Please enter another email address!');
+            return back()->withInput()->with('error', 'Email exists! Please enter another email address!');
         }
 
         $user->name                     = $request->get('name');

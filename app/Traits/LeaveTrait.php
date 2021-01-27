@@ -9,6 +9,8 @@ use App\Models\LeaveDetail;
 use App\Models\LeaveApplication;
 use App\Models\Holiday;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 trait LeaveTrait{
 
@@ -31,88 +33,110 @@ trait LeaveTrait{
         }
     }
 
-    public function yearlyCarryOver($id)
+    public function yearlyCarryOver()
     {
-        $leave          = LeaveDetail::where('user_id', $id)->first();
+        $user = Auth::user();
         $current_year   = Carbon::now()->year;
 
-        if (isset($leave)) {
-            $leave_year     = Carbon::parse($leave->updated_at)->year;
+            if($current_year > $user->employee->last_carry_over)
+            {
+                    $user->leave->annual_e         = 14;
+                    $user->leave->taken_so_far     = 0;
+                    $user->leave->carry_over       =  $user->leave->balance_leaves;
+                    $user->leave->total_leaves     = ($user->leave->annual_e)+($user->leave->carry_over);
+                    $user->leave->balance_leaves   = ($user->leave->total_leaves)-($user->leave->taken_so_far);
+                    $user->leave->save();
 
-            if ($current_year != $leave_year) {
-                $leave->annual_e         = 14;
-                $leave->taken_so_far     = 0;
-                $leave->carry_over       =  $leave->balance_leaves;
-                $leave->total_leaves     = ($leave->annual_e)+($leave->carry_over);
-                $leave->balance_leaves   = ($leave->total_leaves)-($leave->taken_so_far);
-                $leave->save();
+                    $user->employee->last_carry_over = $current_year;
+                    $user->employee->save();
             }
-        }
-
-
 
     }
 
-    public function employeeLeaveStatus()
+    public function off_duty()
     {
-        $offduty                        = User::leftjoin('leave_applications','leave_applications.user_id','=','users.id')
-                                                ->select('users.*','leave_applications.*','users.id as userID')
-                                                ->where('users.id','!=', 1)
-                                                ->where('leave_applications.application_status_id' , 2)
-                                                ->where('leave_applications.from','<=',Carbon::today())
-                                                ->where('leave_applications.to', '>=', Carbon::today())
-                                                ->get();
+        $today  = Carbon::today()->locale('en_MY');
+        $start  = $today->startOfWeek(Carbon::SUNDAY)->format('Y-m-d');
+        $end    = $today->endOfWeek(Carbon::SATURDAY)->format('Y-m-d');
+
+        $offduty     = LeaveApplication::join('users','leave_applications.user_id','=','users.id')
+                                        ->select('leave_applications.*','users.*','users.id as userID')
+                                        ->where(function ($query) use ($start, $end)
+                                        {
+                                            $query->where('leave_applications.application_status_id', 2)
+                                                    ->where('leave_applications.from','>=', $start)
+                                                    ->where('leave_applications.from','<=', $end);
+                                        })
+                                        ->orWhere(function($query) use ($start, $end)
+                                        {
+                                            $query->where('leave_applications.application_status_id', 2)
+                                                    ->where('leave_applications.from','<', $start)
+                                                    ->where('leave_applications.to','>', $end);
+                                        })
+                                        ->orWhere(function($query) use ($start, $today)
+                                        {
+                                            $query->where('leave_applications.application_status_id', 2)
+                                                    ->where('leave_applications.to','>=', $start)
+                                                    ->where('leave_applications.to','<', $today);
+                                        })
+                                        ->paginate(5);
+
+
         if (isset($offduty))
         {
-            foreach ($offduty as $off)
-            {
-                $user = User::find($off->userID);
+            foreach ($offduty as $ofd)
+            {   $user = User::find($ofd->userID);
 
-                if($off->days_taken < 3)
+                if($ofd->days_taken < 3)
                 {
-                    $user->emp_status_id = 3; //Leave
+                    $ofd->user->emp_status_id = 3; //Leave
                 }
                 else
                 {
-                    $user->emp_status_id = 4; //Long Leave
+                    $ofd->user->emp_status_id = 4; //Long Leave
                 }
-
-                $user->save();
+                    $ofd->user->save();
             }
         }
 
-        if(User::where('emp_status_id',3)->exists())
-        {
-            $users = User::join('leave_applications','leave_applications.user_id','=','users.id')
-                            ->where('users.emp_status_id',3)
-                            ->where('leave_applications.from','<=',Carbon::today())
-                            ->where('leave_applications.to', '<=', Carbon::today())
-                            ->get();
+        $ofd_id = $offduty->pluck('userID');
+        $users  = User::pluck('id');
+        $ond_id = $users->diff($ofd_id);
 
-            if(isset($users))
-            {
-                foreach ($users as $user)
+        if (isset($ond_id))
+        {
+            foreach ($ond_id as $id) {
+                $check = User::find($id);
+                if($check->emp_status_id == 3 || $check->emp_status_id == 4)
                 {
-                    $user->emp_status_id = 1; //Working
-                    $user->save();
+                    $check->emp_status_id = 1;
+                    $check->save();
                 }
             }
         }
 
-        if(User::where('emp_status_id',4)->exists())
-        {
-            $users = User::join('leave_applications','leave_applications.user_id','=','users.id')
-                            ->where('users.emp_status_id',4)
-                            ->where('leave_applications.from','<=',Carbon::today())
-                            ->where('leave_applications.to', '<=', Carbon::today())
-                            ->get();
+        $offduty_count      = LeaveApplication::where(function ($query) use ($start, $end)
+                                            {
+                                                $query->where('application_status_id', 2)
+                                                        ->where('from','>=', $start)
+                                                        ->where('from','<=', $end);
+                                            })
+                                            ->orWhere(function($query) use ($start, $end)
+                                            {
+                                                $query->where('application_status_id', 2)
+                                                        ->where('from','<', $start)
+                                                        ->where('to','>', $end);
+                                            })
+                                            ->orWhere(function($query) use ($start, $today)
+                                            {
+                                                $query->where('application_status_id', 2)
+                                                        ->where('to','>=', $start)
+                                                        ->where('to','<', $today);
+                                            })
+                                            ->distinct('user_id')
+                                            ->count();
 
-            if(isset($users))
-            {
-                $user->emp_status_id = 1; //Working
-                $user->save();
-            }
-        }
+        return compact('offduty','offduty_count');
     }
 
     //Admin
@@ -190,56 +214,12 @@ trait LeaveTrait{
 
     public function dashboardAdmins()
     {
-        $today = Carbon::today()->locale('en_MY');
-        $start  = $today->startOfWeek(Carbon::MONDAY)->format('Y-m-d');
-        $end    = $today->endOfWeek(Carbon::FRIDAY)->format('Y-m-d');
-
         //Employees
         $employees                      = User::where('id','!=', 1)->get();
         $resigned                       = User::where('id','!=', 1)
                                             ->where('emp_status_id', 2)
                                             ->get();
 
-        $offduty                        = LeaveApplication::where(function ($query) use ($start, $end)
-                                                            {
-                                                                $query->where('application_status_id', 2)
-                                                                      ->where('from','>=', $start)
-                                                                      ->where('from','<=', $end);
-                                                            })
-                                                            ->orWhere(function($query) use ($start, $end)
-                                                            {
-                                                                $query->where('application_status_id', 2)
-                                                                      ->where('from','<', $start)
-                                                                      ->where('to','>', $end);
-                                                            })
-                                                            ->orWhere(function($query) use ($start, $today)
-                                                            {
-                                                                $query->where('application_status_id', 2)
-                                                                      ->where('to','>=', $start)
-                                                                      ->where('to','<', $today);
-                                                            })
-                                                            ->paginate(5);
-
-        $offduty_count                  = LeaveApplication::where(function ($query) use ($start, $end)
-                                                            {
-                                                                $query->where('application_status_id', 2)
-                                                                      ->where('from','>=', $start)
-                                                                      ->where('from','<=', $end);
-                                                            })
-                                                            ->orWhere(function($query) use ($start, $end)
-                                                            {
-                                                                $query->where('application_status_id', 2)
-                                                                      ->where('from','<', $start)
-                                                                      ->where('to','>', $end);
-                                                            })
-                                                            ->orWhere(function($query) use ($start, $today)
-                                                            {
-                                                                $query->where('application_status_id', 2)
-                                                                      ->where('to','>=', $start)
-                                                                      ->where('to','<', $today);
-                                                            })
-                                                            ->distinct('user_id')
-                                                            ->count();
 
         $employees_count                = $employees->count();
         $male_count                     = EmployeeDetail::where('gender_id',1)->count();
@@ -401,8 +381,6 @@ trait LeaveTrait{
             'approver_count',
             'working_count',
             'resigned_count',
-            'offduty',
-            'offduty_count',
             'taken_so_far_sum',
             'carry_over_sum',
             'balance_leaves_sum',

@@ -28,6 +28,13 @@
                     <input type="text" size="3" name="total_holidays" disabled value="{{$holidays_count}}">
                 </span>
 
+                @if($holidays->isEmpty())
+                <div class="card shadow-sm border-left-dark mt-4 mb-4">
+                    <div class="card-body text-center">
+                        <span class="text-muted">No Application Available</span>
+                    </div>
+                </div>
+                @else
                 <div class="table-responsive-lg">
                     <table class="table table-sm table-bordered table-striped container small">
                         <thead class="table-dark">
@@ -64,6 +71,8 @@
                     </table>
                 </div>
                 {{ $holidays->links() }}
+                @endif
+
 
 
             </div><!-- End Page Content -->

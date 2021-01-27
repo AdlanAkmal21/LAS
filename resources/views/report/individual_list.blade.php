@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="table-responsive-lg">
-                    <table class="table small table-bordered table-striped table-responsive-lg container">
+                    <table class="table table-sm small table-bordered table-striped table-responsive-lg container">
                         <thead class="table-dark">
                             <tr>
                                 <th>#</th>
@@ -29,7 +29,7 @@
                         </thead>
                         <tbody>
                             @foreach($users as $key => $user)
-                            <tr class="table-tr">
+                            <tr>
                                 <td>{{ $users->firstItem() + $key }}.</td>
                                 <td>{{ $user->name }}</td>
                                 <td>{{ $user->refRole->role_name }}</td>

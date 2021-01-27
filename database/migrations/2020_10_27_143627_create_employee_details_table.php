@@ -21,7 +21,7 @@ class CreateEmployeeDetailsTable extends Migration
             $table->string('gender_id');
             $table->string('phoneNum');
             $table->date('date_joined');
-
+            $table->string('last_carry_over');
             $table->timestamps();
         });
     }

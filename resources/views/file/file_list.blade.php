@@ -25,6 +25,13 @@
                     <input type="text" size="3" id="files_count" name="files_count" disabled value="{{$files_count}}">
                 </span>
 
+                @if ($files->isEmpty())
+                <div class="card shadow-sm border-left-dark mt-2 mb-4">
+                    <div class="card-body text-center">
+                        <span class="text-muted">No Files Available</span>
+                    </div>
+                </div>
+                @else
                 <div class="table-responsive-lg">
                     <table class="table table-sm table-bordered table-striped container small">
                         <thead class="table-dark text-center">
@@ -57,6 +64,9 @@
                     </table>
                 </div>
                 {{ $files->links() }}
+                @endif
+
+
 
 
             </div><!-- End Page Content -->

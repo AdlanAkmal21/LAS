@@ -78,11 +78,25 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="half_day">Half Day</label>
-                                <input type="checkbox" value="1" id="half_day" disabled name="half_day">
+                            @if ($application->half_day == null)
+                            <div class="form-group row">
+                                <label for="check" class="col-sm-2 col-form-label">Half Day</label>
+                                <div class="col-sm-10">
+                                    <div id="check" class="form-control border-0">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="half_day" id="morning"
+                                                value="1" disabled>
+                                            <label class="form-check-label" for="morning">Morning</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="half_day" id="evening"
+                                                value="2" disabled>
+                                            <label class="form-check-label" for="evening">Evening</label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-
+                            @endif
 
                             <div class="p-t-15">
                                 <button type="submit" class="btn btn-success">Update</button>

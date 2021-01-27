@@ -36,8 +36,10 @@ class UserController extends Controller
      */
     public function index()
     {
+        $this->yearlyCarryOver();
         $this->checkPendingApplication();
         $this->yearlyCarryOver(Auth::id());
+        $this->off_duty();
 
         $array              = $this->dashboardEmployees(Auth::id());
         $user               = $array['user'];

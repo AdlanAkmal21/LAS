@@ -25,7 +25,7 @@ class EmployeeTableSeeder extends Seeder
           'email' => 'admin@igsprotech.com.my',
           'role_id' => 1,
           'emp_status_id' => 1,
-          'password' => Hash::make('password'),
+          'password' => Hash::make('igsprotech2020'),
           'created_at' => Carbon::now(),
           'updated_at' => Carbon::now(),
         ]);
