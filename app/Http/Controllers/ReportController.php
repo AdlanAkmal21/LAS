@@ -4,13 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
 use Laracasts\Utilities\JavaScript\JavaScriptFacade;
-use App\Traits\LeaveTrait;
 use App\Models\User;
+use App\Traits\AdminTrait;
+use App\Traits\UserTrait;
 
 class ReportController extends Controller
 {
-    use LeaveTrait;
-
+    use UserTrait;
+    use AdminTrait;
     /**
      * Create a new controller instance.
      *

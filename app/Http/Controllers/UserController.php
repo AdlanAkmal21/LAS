@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Traits\IndexTrait;
+use App\Traits\UserTrait;
 use Illuminate\Support\Facades\Auth;
-use App\Traits\LeaveTrait;
 
 class UserController extends Controller
 {
-        use LeaveTrait;
-
+    use UserTrait;
+    use IndexTrait;
     /**
      * Create a new controller instance.
      *
@@ -67,8 +69,12 @@ class UserController extends Controller
 
     public function viewNotifications()
     {
+        //Workaround to notifications() 1013 error.
+        //Must access User model to use Notifiable trait.
+        $user = User::find(Auth::id());
+
        return view('user.notifications',[
-           'notifications' => Auth()->user()->notifications()->paginate(5)
+           'notifications' => $user->notifications()->paginate(5)
        ]);
     }
 }

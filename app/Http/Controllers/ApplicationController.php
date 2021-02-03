@@ -18,14 +18,10 @@ use App\Notifications\NewApplicationAlert;
 
 use Carbon\Carbon;
 
-use App\Traits\LeaveTrait;
 use Illuminate\Support\Facades\Storage;
 
 class ApplicationController extends Controller
 {
-
-    use LeaveTrait;
-
     /**
      * Create a new controller instance.
      *

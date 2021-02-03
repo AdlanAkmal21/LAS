@@ -15,13 +15,17 @@ use App\Models\LeaveApplication;
 use App\Models\RefRole;
 use App\Models\RefEmpStatus;
 use App\Models\RefGender;
-
-
+use App\Traits\AdminTrait;
+use App\Traits\IndexTrait;
 use App\Traits\LeaveTrait;
+use App\Traits\UserTrait;
 
 class AdminController extends Controller
 {
     use LeaveTrait;
+    use UserTrait;
+    use AdminTrait;
+    use IndexTrait;
 
     /**
      * Create a new controller instance.
@@ -230,7 +234,14 @@ class AdminController extends Controller
      */
     public function destroy($id)
     {
-        $this->resignApprover($id);
+        $user                   = User::find($id);
+        $user->emp_status_id    = 2;
+        $user->save();
+
+        if($user->position_id == 3)
+        {
+            $this->resignApprover($id);
+        }
 
         return redirect('/admin/employeelist')->with('error', 'Employee Resigned.');
     }
