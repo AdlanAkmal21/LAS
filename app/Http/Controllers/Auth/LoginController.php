@@ -40,14 +40,14 @@ class LoginController extends Controller
                     return RouteServiceProvider::ADMIN;
                     break;
                 case 2:
-                    return RouteServiceProvider::EMPLOYEE;
+                    return RouteServiceProvider::USER;
                     break;
                 case 3:
-                    return RouteServiceProvider::APPROVER;
+                    return RouteServiceProvider::USER;
                     break;
 
                 default:
-                    return '/';
+                    return RouteServiceProvider::HOME;
                 break;
             }
         }

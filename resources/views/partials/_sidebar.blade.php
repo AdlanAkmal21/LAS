@@ -12,7 +12,7 @@
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
         <a class="nav-link" @if(Auth::user()->role_id == 1) href="{{ route('admins.index') }}" @else
-            href="{{ route('users.index') }}" @endif>
+            href="{{ route('user.index') }}" @endif>
             <i class="fas fa-fw fa-home"></i>
             <span>Dashboard</span>
         </a>
@@ -126,8 +126,8 @@
         <div id="ApproverManagement" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manage Applicants:</h6>
-                <a class="collapse-item" href="{{ route('users.approverlist', Auth::id()) }}">Approver's List</a>
-                <a class="collapse-item" href="{{ route('users.applicantlist', Auth::id()) }}">Applicants List</a>
+                <a class="collapse-item" href="{{ route('approver.approverlist', Auth::id()) }}">Approver's List</a>
+                <a class="collapse-item" href="{{ route('approver.applicantlist', Auth::id()) }}">Applicants List</a>
             </div>
         </div>
     </li>

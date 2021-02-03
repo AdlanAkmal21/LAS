@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\ApproverController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\FileController;
@@ -30,15 +31,13 @@ return redirect('/login');
 Auth::routes();
 
 //Resources
-Route::resource('admins', AdminController::class)->middleware('role:1');
+Route::resource('admins', AdminController::class);
 Route::resource('users', UserController::class);
 Route::resource('applications', ApplicationController::class );
 Route::resource('holidays', HolidayController::class );
 
-//Indexes
-Route::get('/employee/dashboard', [UserController::class, 'index'])->middleware('role:2');
-Route::get('/approver/dashboard', [UserController::class, 'index'])->middleware('role:3');
-
+//Dashboard
+Route::get('dashboard', [UserController::class, 'index'])->name('user.index');
 
 //Applications
 Route::get('application/adminshow/{id}', [ApplicationController::class, 'adminAppShow'])->name('applications.adminAppShow');
@@ -58,13 +57,13 @@ Route::get('admin/employeeedit/{id}',[AdminController::class, 'edit'])->name('ad
 
 Route::get('admin/applicationlist',[AdminController::class, 'applicationlist'])->name('admins.applicationlist');
 
-Route::get('/file/filelist', [FileController::class, 'index'])->name('file.index');
+Route::get('file/filelist', [FileController::class, 'index'])->name('file.index');
 
 //Employees & Approvers
-Route::get('approver/approverlist/{id}',[UserController::class, 'approverlist'])->name('users.approverlist');
-Route::get('approver/applicantlist/{id}', [UserController::class, 'applicantlist'])->name('users.applicantlist');
-Route::get('approver/approve/{id}', [UserController::class, 'approve'])->name('users.approve');
-Route::get('approver/reject/{id}', [UserController::class, 'reject'])->name('users.reject');
+Route::get('approver/approverlist/{id}',[ApproverController::class, 'approverlist'])->name('approver.approverlist');
+Route::get('approver/applicantlist/{id}', [ApproverController::class, 'applicantlist'])->name('approver.applicantlist');
+Route::get('approver/approve/{id}', [ApproverController::class, 'approve'])->name('approver.approve');
+Route::get('approver/reject/{id}', [ApproverController::class, 'reject'])->name('approver.reject');
 
 //Change Password
 Route::get('change-password', [ResetPasswordController::class , 'change_page'])->name('change_page');
@@ -80,3 +79,6 @@ Route::post('forgot-reset-password', [ForgotPasswordController::class , 'reset']
 //Notification
 Route::get('user/readNotifications', [UserController::class, 'readNotifications'])->name('users.readNotifications');
 Route::get('user/viewNotifications', [UserController::class, 'viewNotifications'])->name('users.viewNotifications');
+
+//Error Messages
+Route::view('/error', 'error.no_permission');

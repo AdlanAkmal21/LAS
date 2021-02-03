@@ -38,7 +38,7 @@
                             <div class="col-xl-12 col-lg-12 my-1">
                                 <div class="card border-left-danger shadow h-100 py-2">
                                     <div class="card-body">
-                                        <a href="{{ route('users.approverlist', Auth::id()) }}"
+                                        <a href="{{ route('approver.approverlist', Auth::id()) }}"
                                             class="stretched-link"></a>
                                         <div class="row no-gutters align-items-center">
                                             <div class="col mr-2">

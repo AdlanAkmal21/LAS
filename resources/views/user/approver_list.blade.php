@@ -57,7 +57,7 @@
                                                     <a class="dropdown-item"
                                                         href="{{ route('applications.show', $pending->pending_id)}}">Show</a>
 
-                                                    <form action="{{ route('users.approve', $pending->pending_id)}}"
+                                                    <form action="{{ route('approver.approve', $pending->pending_id)}}"
                                                         method="post">
                                                         @csrf
                                                         @method('GET')
@@ -65,7 +65,7 @@
                                                             type="submit" value="Approve">
                                                     </form>
 
-                                                    <form action="{{ route('users.reject', $pending->pending_id)}}"
+                                                    <form action="{{ route('approver.reject', $pending->pending_id)}}"
                                                         method="post">
                                                         @csrf
                                                         @method('GET')

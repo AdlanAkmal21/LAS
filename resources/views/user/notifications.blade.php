@@ -15,7 +15,7 @@
                 <div class="card my-3">
                     <div class="card-header"><b>{{ __('Notifications') }}</b>
                     </div>
-                    <div class="card-body text-center">
+                    <div class="card-body">
 
                         @if ($notifications->isEmpty())
                         <span class="text-muted">No Notifications Available</span>
@@ -33,7 +33,7 @@
                                         <p><small>Applied at: <u>{{$notification->data['created_at']}}</u></small></p>
                                     </div>
                                     <div class="col-xl-3 col-lg-3">
-                                        <a href="{{ route('users.approverlist', Auth::id()) }}"
+                                        <a href="{{ route('approver.approverlist', Auth::id()) }}"
                                             class="btn btn-warning btn-block">Go to
                                             approver's list</a><br>
                                     </div>
@@ -45,7 +45,7 @@
                                         <p><small>Applied at: <u>{{$notification->data['created_at']}}</u></small></p>
                                     </div>
                                     <div class="col-xl-3 col-lg-3">
-                                        <a href="{{ route('users.approverlist', Auth::id()) }}"
+                                        <a href="{{ route('approver.approverlist', Auth::id()) }}"
                                             class="btn btn-info btn-block">Go to approver's
                                             list</a><br>
                                     </div>

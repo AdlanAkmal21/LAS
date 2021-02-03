@@ -32,14 +32,14 @@ class RedirectIfAuthenticated
                             return redirect(RouteServiceProvider::ADMIN);
                             break;
                         case 2:
-                            return redirect(RouteServiceProvider::EMPLOYEE);
+                            return redirect(RouteServiceProvider::USER);
                             break;
                         case 3:
-                            return redirect(RouteServiceProvider::APPROVER);
+                            return redirect(RouteServiceProvider::USER);
                             break;
 
                         default:
-                            return redirect('/')->with('error', 'Authentication failed. Please try again or contact HR.');
+                            return redirect(RouteServiceProvider::HOME)->withInput()->with('error', 'Authentication failed. Please try again or contact HR.');
                             break;
                         }
                 }
