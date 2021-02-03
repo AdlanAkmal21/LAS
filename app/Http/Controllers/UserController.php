@@ -62,7 +62,9 @@ class UserController extends Controller
 
     public function readNotifications()
     {
-        Auth()->user()->unreadNotifications->markAsRead();
+        //Must access User model to use Notifiable trait.
+        $user = User::find(Auth::id());
+        $user->unreadNotifications->markAsRead();
 
         return redirect()->route('users.viewNotifications');
     }
@@ -72,9 +74,17 @@ class UserController extends Controller
         //Workaround to notifications() 1013 error.
         //Must access User model to use Notifiable trait.
         $user = User::find(Auth::id());
+        $notifications = $user->notifications()->paginate(5);
 
-       return view('user.notifications',[
-           'notifications' => $user->notifications()->paginate(5)
-       ]);
+       return view('user.notifications', compact('notifications'));
+    }
+
+    public function clearNotifications()
+    {
+        //Must access User model to use Notifiable trait.
+        $user = User::find(Auth::id());
+        $user->notifications()->delete();
+
+        return back()->withInput()->with('success', 'Notifications cleared.');
     }
 }

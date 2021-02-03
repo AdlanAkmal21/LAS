@@ -100,7 +100,7 @@ class ApproverController extends Controller
         }
 
         $application_id_2 = $application->id;
-        Mail::to($application->user->email)->send(new ApproverMail($application_id_2));
+        // Mail::to($application->user->email)->send(new ApproverMail($application_id_2));
         $application->user->notify(new ApproverAlert($application));
 
 
@@ -121,7 +121,7 @@ class ApproverController extends Controller
         $application->save();
 
         $application_id_2 = $application->id;
-        Mail::to($application->user->email)->send(new ApproverMail($application_id_2));
+        // Mail::to($application->user->email)->send(new ApproverMail($application_id_2));
         $application->user->notify(new ApproverAlert($application));
 
         return redirect(url()->previous())->with('error', 'Application rejected.');

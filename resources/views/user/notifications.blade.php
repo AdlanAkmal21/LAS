@@ -20,7 +20,15 @@
                         @if ($notifications->isEmpty())
                         <span class="text-muted">No Notifications Available</span>
                         @else
+
                         <ul class="list-group">
+
+                            <form action="{{ route('users.clearNotifications')}}" method="post">
+                                @csrf
+                                <input role="button" class="btn btn-primary" type="submit" value="Clear Notifications">
+                            </form>
+                            <br>
+
                             @foreach ($notifications as $notification)
                             <li class="list-group-item">
                                 @if ($notification->type == 'App\Notifications\NewApplicationAlert')

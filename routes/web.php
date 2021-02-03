@@ -79,6 +79,7 @@ Route::post('forgot-reset-password', [ForgotPasswordController::class , 'reset']
 //Notification
 Route::get('user/readNotifications', [UserController::class, 'readNotifications'])->name('users.readNotifications');
 Route::get('user/viewNotifications', [UserController::class, 'viewNotifications'])->name('users.viewNotifications');
+Route::post('user/clearNotifications', [UserController::class, 'clearNotifications'])->name('users.clearNotifications');
 
 //Error Messages
 Route::view('/error', 'error.no_permission');
