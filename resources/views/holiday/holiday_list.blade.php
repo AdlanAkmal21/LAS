@@ -22,11 +22,12 @@
                 @include('partials._validation')
                 @include('partials._notifications')
 
-
                 <span>
                     <label for="total_holidays">Total Holidays :</label>
-                    <input type="text" size="3" name="total_holidays" disabled value="{{$holidays_count}}">
+                    <input type="text" class="text-center" size="3" name="total_holidays" disabled
+                        value="{{$holidays_count}}">
                 </span>
+
 
                 @if($holidays->isEmpty())
                 <div class="card shadow-sm border-left-dark mt-4 mb-4">
@@ -35,7 +36,7 @@
                     </div>
                 </div>
                 @else
-                <div class="table-responsive-lg">
+                <div class="table-responsive-lg mt-1">
                     <table class="table table-sm table-bordered table-striped container small">
                         <thead class="table-dark">
                             <tr>

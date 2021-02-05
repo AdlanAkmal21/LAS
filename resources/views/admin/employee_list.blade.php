@@ -24,7 +24,8 @@
 
                 <span>
                     <label for="total_employees">Total Employees :</label>
-                    <input type="text" size="3" name="total_employees" disabled value="{{$employees_count}}">
+                    <input type="text" class="text-center" size="3" name="total_employees" disabled
+                        value="{{$employees_count}}">
                 </span>
 
                 <div class="table-responsive-lg">

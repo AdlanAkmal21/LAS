@@ -12,10 +12,14 @@
             <div class="container-fluid">
                 <!-- Begin Page Content -->
 
-                <div class="d-sm-flex align-items-center justify-content-between">
+                <div class="d-sm-flex align-items-center justify-content-between mb-2">
                     <h1 class="h3 mb-0 text-gray-800">Applications List (All)</h1>
                 </div>
-
+                <span>
+                    <label for="total_applications">Total Applications :</label>
+                    <input type="text" class="text-center" size="3" name="total_applications" disabled
+                        value="{{$applications->count()}}">
+                </span>
 
                 @if($applications->isEmpty())
                 <div class="card shadow-sm border-left-warning mt-4 mb-4">
@@ -24,7 +28,7 @@
                     </div>
                 </div>
                 @else
-                <div class="table-responsive-lg mt-3">
+                <div class="table-responsive-lg mt-1">
                     <table class="table table-sm table-bordered table-striped container small">
                         <thead class="table-dark">
                             <tr class="d-flex">

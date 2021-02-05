@@ -22,7 +22,8 @@
 
                 <span>
                     <label for="files_count">Total Files :</label>
-                    <input type="text" size="3" id="files_count" name="files_count" disabled value="{{$files_count}}">
+                    <input type="text" class="text-center" size="3" id="files_count" name="files_count" disabled
+                        value="{{$files_count}}">
                 </span>
 
                 @if ($files->isEmpty())
