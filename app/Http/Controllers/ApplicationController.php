@@ -181,7 +181,7 @@ class ApplicationController extends Controller
 
 
                 $application_id = $application->id;
-                // Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+                Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
 
                 $application->user->employee->approver->notify(new NewApplicationAlert($application));
 
@@ -228,7 +228,7 @@ class ApplicationController extends Controller
                                     }
 
                                     $application_id = $application->id;
-                                    // Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+                                    Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
 
                                     $application->user->employee->approver->notify(new NewApplicationAlert($application));
 
@@ -276,7 +276,7 @@ class ApplicationController extends Controller
                                     }
 
                                     $application_id = $application->id;
-                                    // Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
+                                    Mail::to($user->employee->approver->email)->send(new NewApplicationMail($application_id));
 
                                     $application->user->employee->approver->notify(new NewApplicationAlert($application));
 
