@@ -79,18 +79,16 @@
         Employee
     </div>
 
-    <!-- Nav Item - Charts -->
     <li class="nav-item">
         <a class="nav-link" href="{{ route('applications.create')}}">
-            <i class="fas fa-fw fa-id-card"></i>
+            <i class="fas fa-file-signature"></i>
             <span>Apply Leave</span></a>
     </li>
 
-    <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#EmployeeManagement"
             aria-expanded="true" aria-controls="collapsePages">
-            <i class="fas fa-fw fa-file-alt"></i>
+            <i class="fas fa-tasks"></i>
             <span>Management</span>
         </a>
         <div id="EmployeeManagement" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
@@ -103,6 +101,12 @@
                 <a class="collapse-item" href="{{ route('change_page')}}">Change Password</a>
             </div>
         </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('attendance.view')}}">
+            <i class="fas fa-fw fa-id-card"></i>
+            <span>WFH</span></a>
     </li>
     @endif
 

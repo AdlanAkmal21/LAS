@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\UserLog;
 use App\Traits\IndexTrait;
 use App\Traits\UserTrait;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -86,5 +88,65 @@ class UserController extends Controller
         $user->notifications()->delete();
 
         return back()->withInput()->with('success', 'Notifications cleared.');
+    }
+
+    public function attendance_view()
+    {
+        $today      = UserLog::where('user_id', Auth::id())
+                    ->whereDate('created_at', Carbon::today()
+                    ->toDateString())
+                    ->first();
+
+        $all_logs  = UserLog::where('user_id', Auth::id())
+                    ->orderBy('date','DESC')
+                    ->paginate(5);
+
+        return view('user.user_log', compact('today','all_logs'));
+    }
+
+    public function clockIn()
+    {
+        if(UserLog::where('user_id', Auth::id())->whereDate('created_at', Carbon::today()->toDateString())->doesntExist()){
+            $new_log = new UserLog();
+            $new_log->user_id   = Auth::id();
+            $new_log->date      = Carbon::now()->toDateString();
+            $new_log->clock_in  = Carbon::now()->format('h:i:s');
+            $new_log->save();
+
+            return redirect('/attendance')->with('success', 'You have clocked in.');
+        }
+        else {
+            return redirect('/attendance')->with('error', 'You have already clocked in!');
+        }
+    }
+
+    public function clockOut()
+    {
+        if ($today = UserLog::where('user_id', Auth::id())->whereDate('created_at', Carbon::today()->toDateString())->first()) {
+
+            $today->clock_out = Carbon::now()->format('h:i:s');
+            $seconds = Carbon::parse($today->clock_in)->diffInSeconds(Carbon::parse($today->clock_out));
+
+            if($seconds < 60){
+                    $today->period = $seconds.'s';
+            }
+            else {
+                $minutes = floor(($seconds / 60) % 60);
+
+                if($minutes < 60){
+                    $today->period = $minutes.'m';
+                }
+                else{
+                    $hours = floor(($seconds / 3600)-1);
+                    $today->period = $hours.'h '.$minutes.'m';
+                }
+            }
+            $today->save();
+
+            return redirect('/attendance')->with('success', 'You have clocked out!');
+        }
+        else {
+            return redirect('/attendance')->with('error', 'You have not clocked in today.');
+        }
     }
 }

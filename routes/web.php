@@ -83,3 +83,9 @@ Route::post('user/clearNotifications', [UserController::class, 'clearNotificatio
 
 //Error Messages
 Route::view('/error', 'error.no_permission');
+
+
+//Attendance
+Route::get('/attendance', [UserController::class, 'attendance_view'])->name('attendance.view');
+Route::post('/attendance/clockIn', [UserController::class, 'clockIn'])->name('attendance.clockIn');
+Route::post('/attendance/clockOut', [UserController::class, 'clockOut'])->name('attendance.clockOut');
