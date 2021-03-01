@@ -9,17 +9,6 @@ class HolidayController extends Controller
 {
 
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -56,16 +45,16 @@ class HolidayController extends Controller
 
         $holiday->save();
 
-        return redirect('/holidays/create')->with('success' , 'Holiday added.');
+        return redirect()->route('holiday.create')->with('success' , 'Holiday added.');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  App\Models\Holiday $holiday
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($holiday)
     {
         //
     }
@@ -73,13 +62,11 @@ class HolidayController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  App\Models\Holiday $holiday
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($holiday)
     {
-        $holiday        = Holiday::find($id);
-
         return view('holiday.holiday_edit' , compact('holiday'));
     }
 
@@ -87,32 +74,30 @@ class HolidayController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  App\Models\Holiday $holiday
      * @return \Illuminate\Http\Response
      */
-    public function update(HolidayPostRequest $request, $id)
+    public function update(HolidayPostRequest $request, $holiday)
     {
-        $holiday                = Holiday::find($id);
         $holiday->holiday_name  = $request->get('holiday_name');
         $holiday->holiday_date  = $request->get('holiday_date');
 
         $holiday->save();
 
-        return redirect('/holidays')->with('success', 'Holiday Updated.');
+        return redirect()->route('holiday.index')->with('success', 'Holiday Updated.');
 
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  App\Models\Holiday $holiday
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($holiday)
     {
-        $holiday = Holiday::find($id);
         $holiday->delete();
 
-        return redirect('/holidays')->with('error', 'Holiday Deleted.');
+        return redirect()->route('holiday.index')->with('error', 'Holiday Deleted.');
     }
 }

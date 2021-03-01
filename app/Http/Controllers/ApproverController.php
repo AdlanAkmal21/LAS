@@ -16,42 +16,31 @@ use Illuminate\Support\Facades\Mail;
 
 class ApproverController extends Controller
 {
+
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('role:3');
-    }
-
-        /**
      * Display a listing of the pending applications.
      *
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function approverlist($id)
+    public function approver_list($id)
     {
-        $approver   = User::find($id);
         $pendings   = LeaveApplication::join('users','leave_applications.user_id','=','users.id')
                                         ->join('employee_details','users.id','=','employee_details.user_id')
                                         ->select('employee_details.*','users.*','leave_applications.*','leave_applications.id as pending_id')
-                                        ->where('employee_details.approver_id', $approver->id)
+                                        ->where('employee_details.approver_id', $id)
                                         ->where('application_status_id', 1)
                                         ->paginate(5, ['*'], 'pendings');
         $approved   = LeaveApplication::join('users','leave_applications.user_id','=','users.id')
                                         ->join('employee_details','users.id','=','employee_details.user_id')
                                         ->select('employee_details.*','users.*','leave_applications.*','leave_applications.id as approved_id')
-                                        ->where('employee_details.approver_id', $approver->id)
+                                        ->where('employee_details.approver_id', $id)
                                         ->where('application_status_id', 2)
                                         ->paginate(5, ['*'], 'approved');
         $rejected   = LeaveApplication::join('users','leave_applications.user_id','=','users.id')
                                         ->join('employee_details','users.id','=','employee_details.user_id')
                                         ->select('employee_details.*','users.*','leave_applications.*','leave_applications.id as rejected_id')
-                                        ->where('employee_details.approver_id', $approver->id)
+                                        ->where('employee_details.approver_id', $id)
                                         ->where('application_status_id', 3)
                                         ->paginate(5, ['*'], 'rejected');
 
@@ -59,33 +48,29 @@ class ApproverController extends Controller
         return view('user.approver_list', compact('pendings','approved','rejected'));
     }
 
-
-
-        /**
+    /**
      * Display a listing of the applicants list.
      *
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function applicantlist($id)
+    public function applicant_list($id)
     {
-        $approver = User::find($id);
         $users = User::join('employee_details','employee_details.user_id','=','users.id')
-                                    ->where('approver_id' , $approver->id )
+                                    ->where('approver_id' , $id )
                                     ->paginate(10);
 
         return view('user.applicant_list', compact('users'));
     }
 
-
     /**
      * Display the specified resource.
      *
-     * @param  int  $app_id
+     * @param  App\Models\LeaveApplication $application
      * @return \Illuminate\Http\Response
      */
-    public function approve($app_id)
+    public function approve($application)
     {
-        $application                           = LeaveApplication::find($app_id); //$app_id is Application ID
         $application->application_status_id    = 2;
         $application->approval_date            = Carbon::now();
         $application->save();
@@ -110,12 +95,11 @@ class ApproverController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $app_id
+     * @param  App\Models\LeaveApplication $application
      * @return \Illuminate\Http\Response
      */
-    public function reject($app_id)
+    public function reject($application)
     {
-        $application                        = LeaveApplication::find($app_id);
         $application->application_status_id = 3;
         $application->approval_date         = Carbon::now();
         $application->save();

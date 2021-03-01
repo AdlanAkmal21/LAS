@@ -18,8 +18,8 @@ class RouteServiceProvider extends ServiceProvider
      * @var string
      */
     public const HOME = '/';
-    public const ADMIN = '/admins';
-    public const USER = '/dashboard';
+    public const ADMIN = '/admin';
+    public const USER = '/user';
 
     /**
      * The controller namespace for the application.
@@ -35,21 +35,21 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @return void
      */
-public function boot()
-{
-       $this->configureRateLimiting();
+    public function boot()
+    {
+        $this->configureRateLimiting();
 
-       $this->routes(function () {
-            Route::middleware('web')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/web.php'));
+        $this->routes(function () {
+                Route::middleware('web')
+                    ->namespace($this->namespace)
+                    ->group(base_path('routes/web.php'));
 
-            Route::prefix('api')
-                ->middleware('api')
-                ->namespace($this->namespace)
-                ->group(base_path('routes/api.php'));
-        });
-}
+                Route::prefix('api')
+                    ->middleware('api')
+                    ->namespace($this->namespace)
+                    ->group(base_path('routes/api.php'));
+            });
+    }
 
     /**
      * Configure the rate limiters for the application.

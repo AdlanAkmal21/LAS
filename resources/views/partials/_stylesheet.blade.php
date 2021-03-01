@@ -6,7 +6,6 @@
 <!-- Custom styles for this template-->
 <link href="{{asset('assets/css/las.min.css')}}" rel="stylesheet">
 
-
 <!-- --------------------------------------------------------------------------------------------------------- -->
 
 

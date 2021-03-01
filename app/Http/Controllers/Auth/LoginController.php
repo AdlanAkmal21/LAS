@@ -31,25 +31,27 @@ class LoginController extends Controller
      */
     // protected $redirectTo = RouteServiceProvider::HOME;
 
-    public function redirectTo() {
+    public function redirectTo()
+    {
       $role = Auth::user()->role_id;
 
-      if(!(Auth::user()->emp_status_id == 2)){
-            switch ($role) {
-                case 1:
-                    return RouteServiceProvider::ADMIN;
-                    break;
-                case 2:
-                    return RouteServiceProvider::USER;
-                    break;
-                case 3:
-                    return RouteServiceProvider::USER;
-                    break;
-
-                default:
-                    return RouteServiceProvider::HOME;
+      if(!(Auth::user()->emp_status_id == 2))
+      {
+        switch ($role)
+        {
+            case 1:
+                return RouteServiceProvider::ADMIN;
                 break;
-            }
+            case 2:
+                return RouteServiceProvider::USER;
+                break;
+            case 3:
+                return RouteServiceProvider::USER;
+                break;
+            default:
+                return RouteServiceProvider::HOME;
+            break;
+        }
         }
     }
 

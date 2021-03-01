@@ -11,7 +11,7 @@
 
 <body id="page-top" onload="startTime()">
 
-    @yield('content')
+    @yield('wrapper')
 
     <div id="loader-wrapper">
         <div id="loader"></div>

@@ -14,7 +14,7 @@ class Role {
       return $next($request);
     }
 
-      return redirect('/error');
+      return redirect()->route('error.no_permission');
 
   }
 

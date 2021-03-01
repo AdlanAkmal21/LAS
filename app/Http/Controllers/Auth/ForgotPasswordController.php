@@ -30,13 +30,23 @@ class ForgotPasswordController extends Controller
 
     use SendsPasswordResetEmails;
 
-
-    public function getEmail()
+    /**
+     * Show view.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function get_email()
     {
        return view('auth.passwords.email');
     }
 
-    public function postEmail(ForgotPasswordPostRequest $request)
+    /**
+     * Post forgot password email.
+     *
+     * @param  App\Http\Requests\ForgotPasswordPostRequest  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function post_email(ForgotPasswordPostRequest $request)
     {
         $token = Str::random(30);
 
@@ -58,10 +68,18 @@ class ForgotPasswordController extends Controller
         return back()->with('message', 'We have e-mailed your password reset link!');
     }
 
-    public function reset_page($token) {
+    public function reset_page($token)
+    {
         return view('auth.passwords.reset', compact('token'));
     }
 
+
+    /**
+     * Reset password.
+     *
+     * @param  App\Http\Requests\ResetPostRequest  $request
+     * @return \Illuminate\Http\Response
+     */
     public function reset(ResetPostRequest $request)
     {
         // Validate the token
@@ -87,4 +105,5 @@ class ForgotPasswordController extends Controller
 
         return redirect('/')->with('success', 'Password successfully reset!');
     }
+
 }

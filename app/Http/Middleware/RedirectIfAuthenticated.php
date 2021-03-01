@@ -21,13 +21,17 @@ class RedirectIfAuthenticated
     {
         $guards = empty($guards) ? [null] : $guards;
 
-        foreach ($guards as $guard) {
-            if (Auth::guard($guard)->check()) {
+        foreach ($guards as $guard)
+        {
+            if (Auth::guard($guard)->check())
+            {
 
                 $role = Auth::user()->role_id;
 
-                if(!(Auth::user()->emp_status_id == 2)){
-                switch ($role) {
+                if(!(Auth::user()->emp_status_id == 2))
+                {
+                    switch ($role)
+                    {
                         case 1:
                             return redirect(RouteServiceProvider::ADMIN);
                             break;
@@ -37,11 +41,10 @@ class RedirectIfAuthenticated
                         case 3:
                             return redirect(RouteServiceProvider::USER);
                             break;
-
                         default:
-                            return redirect(RouteServiceProvider::HOME)->withInput()->with('error', 'Authentication failed. Please try again or contact HR.');
+                            return redirect(RouteServiceProvider::HOME);
                             break;
-                        }
+                    }
                 }
             }
         }

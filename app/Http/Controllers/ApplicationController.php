@@ -22,23 +22,13 @@ use Illuminate\Support\Facades\Storage;
 
 class ApplicationController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function list()
+    public function index()
     {
         $actives         = LeaveApplication::where('user_id', Auth::id())
                                             ->where('application_status_id','!=',3)//Approved & Pending
@@ -83,8 +73,7 @@ class ApplicationController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  App\Http\Requests\ApplicationPostRequest  $request
      * @return \Illuminate\Http\Response
      */
     public function store(ApplicationPostRequest $request)
@@ -153,8 +142,9 @@ class ApplicationController extends Controller
                 //File Upload - Medical, Emergency & Unrecorded
                 if($file = $request->file('file')){
 
+                    $current_timestamp = Carbon::now()->format('Y-m-d');
                     $extension = $file->extension();
-                    $filename = "$application->id.$extension";
+                    $filename = "($user->name)($application->id)($current_timestamp).$extension";
 
                     $newFile = new File();
                     $newFile->user_id        = $user->id;
@@ -185,7 +175,7 @@ class ApplicationController extends Controller
 
                 $application->user->employee->approver->notify(new NewApplicationAlert($application));
 
-                return redirect('/application/list')->with('success', 'Application submitted.');
+                return redirect()->route('application.index')->with('success', 'Application submitted.');
             }
             else // Annual Leave
             {
@@ -210,8 +200,9 @@ class ApplicationController extends Controller
                                     //File Upload - Annual
                                     if($file = $request->file('file')){
 
+                                        $current_timestamp = Carbon::now()->format('Y-m-d');
                                         $extension = $file->extension();
-                                        $filename = "$application->id.$extension";
+                                        $filename = "($user->name)($application->id)($current_timestamp).$extension";
 
                                         $newFile = new File();
                                         $newFile->user_id        = $user->id;
@@ -233,7 +224,7 @@ class ApplicationController extends Controller
                                     $application->user->employee->approver->notify(new NewApplicationAlert($application));
 
 
-                                    return redirect('/application/list')->with('success', 'Application submitted.');
+                                    return redirect()->route('application.index')->with('success', 'Application submitted.');
                                 }
                                 else // Annual Leave. Days taken <= 2 days, but 1 day before. Error. Must apply 2 days before.
                                 {
@@ -282,7 +273,7 @@ class ApplicationController extends Controller
 
 
 
-                                    return redirect('/application/list')->with('success', 'Application submitted.');
+                                    return redirect()->route('application.index')->with('success', 'Application submitted.');
                                 }
                                 else
                                 {
@@ -310,12 +301,11 @@ class ApplicationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  App\Models\LeaveApplication $application
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($application)
     {
-        $application    = LeaveApplication::find($id);
         $created_at     = date('d/m/Y (H:i:s)', strtotime($application->created_at));
 
         if($application->half_day == 1){
@@ -333,42 +323,14 @@ class ApplicationController extends Controller
         return view('application.application_show', compact('application','created_at','half_day','file'));
     }
 
-        /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-
-     public function adminAppShow($id)
-    {
-        $application    = LeaveApplication::find($id);
-        $created_at     = date('d/m/Y (H:i:s)', strtotime($application->created_at));
-
-        if($application->half_day == 1){
-            $half_day = 'Morning';
-        }
-        else if ($application->half_day == 2){
-            $half_day = 'Evening';
-        }
-        else {
-            $half_day = null;
-        }
-
-        $file = File::where('application_id', $application->id)->first();
-
-        return view('admin.application_show', compact('application','created_at','half_day','file'));
-    }
-
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  App\Models\LeaveApplication $application
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit($application)
     {
-        $application = LeaveApplication::find($id);
         $from        = Carbon::parse($application->from)->format('d/m/Y');
         $to          = Carbon::parse($application->to)->format('d/m/Y');
         $holidays    = Holiday::pluck('holiday_date');
@@ -385,12 +347,11 @@ class ApplicationController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\ApplicationEditRequest  $request
-     * @param  int  $id
+     * @param  App\Models\LeaveApplication $application
      * @return \Illuminate\Http\Response
      */
-    public function update(ApplicationEditRequest $request, $id)
+    public function update(ApplicationEditRequest $request, $application)
     {
-        $application                =  LeaveApplication::find($id);
         $application->from          = Carbon::parse(Carbon::createFromFormat('d/m/Y', $request->get('from'))->format('Y-m-d'));
         $application->to            = Carbon::parse(Carbon::createFromFormat('d/m/Y', $request->get('to'))->format('Y-m-d'));
         $days_taken                 = $request->get('days_taken');
@@ -405,19 +366,17 @@ class ApplicationController extends Controller
         $application->reason        =  $request->get('reason');
         $application->save();
 
-        return redirect('/application/list')->with('success', 'Application updated.');
+        return redirect()->route('application.index')->with('success', 'Application updated.');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  App\Models\LeaveApplication $application
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($application)
     {
-        $application = LeaveApplication::find($id);
-
         if(File::where('application_id', $application->id)->exists()){
             $file        = File::where('application_id', $application->id)->first();
             Storage::delete("$file->filecategory/$file->filename");
@@ -428,4 +387,5 @@ class ApplicationController extends Controller
 
         return back()->withInput()->with('error', 'Application removed.');
     }
+
 }

@@ -11,7 +11,7 @@
         <!-- Nav Item - Alerts -->
         @auth
         <li class="nav-item mx-1">
-            <a class="nav-link" href="{{ route('users.readNotifications') }}">
+            <a class="nav-link" href="{{ route('user.read_notifications') }}">
                 <i class="fas fa-bell fa-fw"></i>
                 @if (Auth()->user()->unreadNotifications->count() > 0)
                 <span class="badge badge-danger badge-counter">
@@ -34,14 +34,6 @@
             </a>
             <!-- Dropdown - User Information -->
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                @if (Auth::user()->role_id == 2 || Auth::user()->role_id == 3)
-                <a class="dropdown-item" href="{{ route('users.show', Auth::id())}}">
-                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Profile
-                </a>
-                <div class="dropdown-divider"></div>
-                @endif
-
                 <a class="dropdown-item text-danger" href="#" data-toggle="modal" data-target="#logoutModal">
                     <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-danger-400 "></i>
                     Logout

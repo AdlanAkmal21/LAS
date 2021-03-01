@@ -7,22 +7,19 @@ use Laracasts\Utilities\JavaScript\JavaScriptFacade;
 use App\Models\User;
 use App\Traits\AdminTrait;
 use App\Traits\UserTrait;
+use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
     use UserTrait;
     use AdminTrait;
-    /**
-     * Create a new controller instance.
+
+
+        /**
+     * Display a listing of the resource.
      *
-     * @return void
+     * @return \Illuminate\Http\Response
      */
-
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
     public function overview()
     {
         $array = $this->dashboardAdmins();
@@ -167,6 +164,11 @@ class ReportController extends Controller
         ));
     }
 
+        /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function individual()
     {
         $users = User::join('employee_details','employee_details.user_id','=','users.id')
@@ -177,7 +179,30 @@ class ReportController extends Controller
         return view('report.individual_list', compact('users'));
     }
 
-    public function findindividual($id)
+    /**
+     * Display a listing of the resource.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request)
+    {
+        $query = $request->search;
+
+        $users = User::where('id', '!=', 1)->where('name', 'like', "%{$query}%")->paginate(10);
+
+
+        return view('report.individual_list', compact('users','query'));
+    }
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function view_individual($id)
     {
         $array                 = $this->employeeShow($id);
         $array2                = $this->employeeReport($id);

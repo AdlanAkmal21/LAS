@@ -14,23 +14,29 @@ trait UserTrait
         $user       = User::find($id);
         $leave      = LeaveDetail::where('user_id', $id)->first();
 
-        if($user->employee->approver_id == null)
-        {
-            $current_approver_name = "None";
-        }
-        else
-        {
-            if(User::where('id', $user->employee->approver_id)->exists())
+
+
+            if($user->employee->approver_id == null)
             {
-                $current_approver_name = $user->employee->approver->name;
+                $current_approver_name = "None";
             }
             else
             {
-                $user->employee->approver_id = null;
-                $user->save();
-                $current_approver_name = "None";
+                if(User::where('id', $user->employee->approver_id)->exists())
+                {
+                    $current_approver_name = $user->employee->approver->name;
+                }
+                else
+                {
+                    $user->employee->approver_id = null;
+                    $user->save();
+                    $current_approver_name = "None";
+                }
             }
-        }
+
+
+
+
         $current_approver_id = $user->employee->approver_id;
 
         return compact('user', 'leave', 'current_approver_name', 'current_approver_id');

@@ -1,11 +1,11 @@
 //Loading Screen
-$(window).on("load", function () {
+$(window).on("load", function() {
     $("body").addClass("loaded");
 });
 
 //Date Picker
 //Date Joined - (Admin)
-$(function () {
+$(function() {
     $("#date_joined").datepicker({
         maxDate: "+0D",
         dateFormat: "dd/mm/yy",
@@ -16,7 +16,7 @@ $(function () {
 });
 
 // Holiday Date - (Admin)
-$(function () {
+$(function() {
     $("#holiday_date").datepicker({
         dateFormat: "yy-mm-dd",
         showAnim: "drop",
@@ -53,9 +53,9 @@ function setHoliDays(date) {
 }
 
 //Apply Leave DatePicker - From & To - (Employees)
-$(function () {
+$(function() {
     $("#leave_type_id")
-        .on("change", function () {
+        .on("change", function() {
             var type = $("#leave_type_id").val();
 
             $("#from, #to").datepicker("destroy");
@@ -80,7 +80,7 @@ $(function () {
                     showOtherMonths: true,
                     minDate: "+1D",
                     maxDate: "+1Y",
-                    onSelect: function (dateStr) {
+                    onSelect: function(dateStr) {
                         var min = $(this).datepicker("getDate");
                         $("#to").datepicker("option", "minDate", min || "0");
                         datepicked();
@@ -100,7 +100,7 @@ $(function () {
                     showOtherMonths: true,
                     minDate: "0",
                     maxDate: "+1Y",
-                    onSelect: function (dateStr) {
+                    onSelect: function(dateStr) {
                         var max = $(this).datepicker("getDate");
                         $("#from").datepicker(
                             "option",
@@ -128,7 +128,7 @@ $(function () {
                     showAnim: "drop",
                     showOtherMonths: true,
                     maxDate: "+1Y",
-                    onSelect: function (dateStr) {
+                    onSelect: function(dateStr) {
                         var min = $(this).datepicker("getDate");
                         $("#to").datepicker("option", "minDate", min || "0");
                         datepicked();
@@ -147,7 +147,7 @@ $(function () {
                     showOtherMonths: true,
                     maxDate: "+1Y",
 
-                    onSelect: function (dateStr) {
+                    onSelect: function(dateStr) {
                         var min = $(this).datepicker("getDate");
                         $("#to").datepicker("option", "minDate", min || "0");
                         datepicked();
@@ -160,7 +160,7 @@ $(function () {
 });
 
 // Leave Application Logic
-var datepicked = function () {
+var datepicked = function() {
     var from = $("#from");
     var to = $("#to");
     var days_taken = $("#days_taken");
@@ -240,6 +240,7 @@ function startTime() {
 
     var t = setTimeout(startTime, 500);
 }
+
 function checkTime(i) {
     if (i < 10) {
         i = "0" + i;
@@ -248,18 +249,23 @@ function checkTime(i) {
 }
 
 //Tables
-$(function () {
-    $("table.container").on("click", "tr.table-tr", function () {
+$(function() {
+    $("table.container").on("click", "tr.table-tr", function() {
         window.location = $(this).data("url");
     });
 });
 
 //Phone Mask
-$(function () {
+$(function() {
     $("#phoneNum").inputmask();
 });
 
 //IC Mask
-$(function () {
+$(function() {
     $("#ic").inputmask();
+});
+
+$(".custom-file-input").on("change", function() {
+    var fileName = $(this).val().split("\\").pop();
+    $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
 });

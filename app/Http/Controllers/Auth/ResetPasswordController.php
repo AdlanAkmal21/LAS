@@ -32,7 +32,7 @@ class ResetPasswordController extends Controller
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        return redirect('/change-password')->with('success', 'Password changed.');
+        return redirect()->route('reset.view')->with('success', 'Password changed.');
     }
 
 }

@@ -11,7 +11,7 @@
 
     <!-- Nav Item - Dashboard -->
     <li class="nav-item active">
-        <a class="nav-link" @if(Auth::user()->role_id == 1) href="{{ route('admins.index') }}" @else
+        <a class="nav-link" @if(Auth::user()->role_id == 1) href="{{ route('admin.index') }}" @else
             href="{{ route('user.index') }}" @endif>
             <i class="fas fa-fw fa-home"></i>
             <span>Dashboard</span>
@@ -54,14 +54,14 @@
         <div id="AdminManagement" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manage Employees:</h6>
-                <a class="collapse-item" href="{{ route('admins.employeeadd') }}">Add Employee</a>
-                <a class="collapse-item" href="{{ route('admins.employeelist') }}">Employee List</a>
+                <a class="collapse-item" href="{{ route('admin.create') }}">Add Employee</a>
+                <a class="collapse-item" href="{{ route('admin.employee_list') }}">Employee List</a>
                 <div class="collapse-divider"></div>
                 <h6 class="collapse-header">Manage Applications:</h6>
-                <a class="collapse-item" href="{{ route('admins.applicationlist') }}">Applications List (All)</a>
+                <a class="collapse-item" href="{{ route('admin.application_list') }}">Applications List (All)</a>
                 <h6 class="collapse-header">Manage Holidays:</h6>
-                <a class="collapse-item" href="{{ route('holidays.create') }}">Add Holiday</a>
-                <a class="collapse-item" href="{{ route('holidays.index') }}">Holiday List</a>
+                <a class="collapse-item" href="{{ route('holiday.create') }}">Add Holiday</a>
+                <a class="collapse-item" href="{{ route('holiday.index') }}">Holiday List</a>
                 <h6 class="collapse-header">Manage Files:</h6>
                 <a class="collapse-item" href="{{ route('file.index') }}">File List</a>
             </div>
@@ -80,7 +80,7 @@
     </div>
 
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('applications.create')}}">
+        <a class="nav-link" href="{{ route('application.create')}}">
             <i class="fas fa-file-signature"></i>
             <span>Apply Leave</span></a>
     </li>
@@ -94,11 +94,11 @@
         <div id="EmployeeManagement" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manage Applications:</h6>
-                <a class="collapse-item" href="{{ route('applications.list')}}">Applications List</a>
+                <a class="collapse-item" href="{{ route('application.index')}}">Applications List</a>
                 <div class="collapse-divider"></div>
                 <h6 class="collapse-header">Manage Account:</h6>
-                <a class="collapse-item" href="{{ route('users.show', Auth::id())}}">Employee Details</a>
-                <a class="collapse-item" href="{{ route('change_page')}}">Change Password</a>
+                <a class="collapse-item" href="{{ route('user.show', Auth::id())}}">Employee Details</a>
+                <a class="collapse-item" href="{{ route('reset.view')}}">Change Password</a>
             </div>
         </div>
     </li>
@@ -130,8 +130,8 @@
         <div id="ApproverManagement" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Manage Applicants:</h6>
-                <a class="collapse-item" href="{{ route('approver.approverlist', Auth::id()) }}">Approver's List</a>
-                <a class="collapse-item" href="{{ route('approver.applicantlist', Auth::id()) }}">Applicants List</a>
+                <a class="collapse-item" href="{{ route('approver.approver_list', Auth::id()) }}">Approver's List</a>
+                <a class="collapse-item" href="{{ route('approver.applicant_list', Auth::id()) }}">Applicants List</a>
             </div>
         </div>
     </li>

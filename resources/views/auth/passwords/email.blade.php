@@ -24,7 +24,7 @@
                         @include('partials._notifications')
 
                         @if (!(Session::has('message')))
-                        <form method="POST" action="{{ route('forgot.postEmail') }}">
+                        <form method="POST" action="{{ route('forgot.post_email') }}">
                             @csrf
 
                             <div class="form-group row">

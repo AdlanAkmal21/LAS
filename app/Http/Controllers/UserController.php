@@ -13,16 +13,7 @@ class UserController extends Controller
 {
     use UserTrait;
     use IndexTrait;
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
 
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
 
     /**
      * Display a listing of the resource.
@@ -61,17 +52,26 @@ class UserController extends Controller
         return view('user.employee_detail' , compact('user','leave','current_approver_name'));
     }
 
-
-    public function readNotifications()
+    /**
+     * Marks notifications as read.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function read_notifications()
     {
         //Must access User model to use Notifiable trait.
         $user = User::find(Auth::id());
         $user->unreadNotifications->markAsRead();
 
-        return redirect()->route('users.viewNotifications');
+        return redirect()->route('user.view_notifications');
     }
 
-    public function viewNotifications()
+    /**
+     * Show the notifications page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function view_notifications()
     {
         //Workaround to notifications() 1013 error.
         //Must access User model to use Notifiable trait.
@@ -81,15 +81,25 @@ class UserController extends Controller
        return view('user.notifications', compact('notifications'));
     }
 
-    public function clearNotifications()
+    /**
+     * Clears the notifications.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function clear_notifications()
     {
         //Must access User model to use Notifiable trait.
         $user = User::find(Auth::id());
         $user->notifications()->delete();
 
-        return back()->withInput()->with('success', 'Notifications cleared.');
+        return redirect()->route('user.view_notifications')->withInput()->with('success', 'Notifications cleared.');
     }
 
+    /**
+     * Show the attendance page.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function attendance_view()
     {
         $today      = UserLog::where('user_id', Auth::id())
@@ -104,7 +114,12 @@ class UserController extends Controller
         return view('user.user_log', compact('today','all_logs'));
     }
 
-    public function clockIn()
+    /**
+     * Clock In.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function clock_in()
     {
         if(UserLog::where('user_id', Auth::id())->whereDate('created_at', Carbon::today()->toDateString())->doesntExist()){
             $new_log = new UserLog();
@@ -113,14 +128,19 @@ class UserController extends Controller
             $new_log->clock_in  = Carbon::now()->format('h:i:s');
             $new_log->save();
 
-            return redirect('/attendance')->with('success', 'You have clocked in.');
+            return redirect()->route('attendance.view')->with('success', 'You have clocked in.');
         }
         else {
-            return redirect('/attendance')->with('error', 'You have already clocked in!');
+            return redirect()->route('attendance.view')->with('error', 'You have already clocked in!');
         }
     }
 
-    public function clockOut()
+    /**
+     * Clock Out.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function clock_out()
     {
         if ($today = UserLog::where('user_id', Auth::id())->whereDate('created_at', Carbon::today()->toDateString())->first()) {
 
@@ -143,10 +163,10 @@ class UserController extends Controller
             }
             $today->save();
 
-            return redirect('/attendance')->with('success', 'You have clocked out!');
+            return redirect()->route('attendance.view')->with('success', 'You have clocked out!');
         }
         else {
-            return redirect('/attendance')->with('error', 'You have not clocked in today.');
+            return redirect()->route('attendance.view')->with('error', 'You have not clocked in today.');
         }
     }
 }

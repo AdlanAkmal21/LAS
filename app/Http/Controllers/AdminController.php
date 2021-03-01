@@ -19,6 +19,8 @@ use App\Traits\AdminTrait;
 use App\Traits\IndexTrait;
 use App\Traits\LeaveTrait;
 use App\Traits\UserTrait;
+use Illuminate\Http\Request;
+
 
 class AdminController extends Controller
 {
@@ -27,17 +29,6 @@ class AdminController extends Controller
     use AdminTrait;
     use IndexTrait;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('role:1');
-    }
 
     /**
      * Display a listing of the resource.
@@ -79,40 +70,7 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function employeelist()
-    {
-        $users = User::join('employee_details', 'employee_details.user_id', '=', 'users.id')
-            ->select('users.*', DB::raw('DATE_FORMAT(employee_details.date_joined, "%d %M, %Y") as date_joined'))
-            ->where('users.id', '!=', 1)
-            ->paginate(10);
-
-
-        $array              = $this->dashboardAdmins();
-        $employees_count    = $array['employees_count'];
-
-        return view('admin.employee_list', compact('users', 'employees_count'));
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function applicationlist()
-    {
-        $applications = LeaveApplication::join('users', 'leave_applications.user_id', '=', 'users.id')
-            ->select('leave_applications.*', 'users.name', 'leave_applications.id as leave_applications_id')
-            ->where('users.id', '!=', 1)
-            ->paginate(10);
-        return view('admin.application_list', compact('applications'));
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function employeeadd()
+    public function create()
     {
         $approvers  = User::where('role_id', 3)->where('emp_status_id', 1)->get();
         $roles      = RefRole::where('id', '!=', 1)->get();
@@ -120,13 +78,6 @@ class AdminController extends Controller
 
         return view('admin.employee_add', compact('approvers', 'roles', 'genders'));
     }
-
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
 
     /**
      * Store a newly created resource in storage.
@@ -157,7 +108,7 @@ class AdminController extends Controller
 
         $this->createLeave($employee->id);
 
-        return redirect('/admin/employeeadd')->with('success', 'Employee added.');
+        return redirect()->route('admin.create')->with('success', 'Employee added.');
     }
 
     /**
@@ -223,7 +174,7 @@ class AdminController extends Controller
         $employee->approver_id          = $request->get('approver_id');
         $employee->save();
 
-        return redirect('/admin/employeelist')->with('success', 'Employee Updated.');
+        return redirect()->route('admin.employee_list')->with('success', 'Employee Updated.');
     }
 
     /**
@@ -243,6 +194,55 @@ class AdminController extends Controller
             $this->resignApprover($id);
         }
 
-        return redirect('/admin/employeelist')->with('error', 'Employee Resigned.');
+        return redirect()->route('admin.employee_list')->with('error', 'Employee Resigned.');
     }
+
+        /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function employee_list()
+    {
+        $users = User::join('employee_details', 'employee_details.user_id', '=', 'users.id')
+            ->select('users.*', DB::raw('DATE_FORMAT(employee_details.date_joined, "%d %M, %Y") as date_joined'))
+            ->where('users.id', '!=', 1)
+            ->paginate(10);
+
+        return view('admin.employee_list', compact('users'));
+    }
+
+
+        /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request)
+    {
+        $query = $request->search;
+
+        $users = User::where('id', '!=', 1)->where('name', 'like', "%{$query}%")->paginate(10);
+
+        // dd($users);
+        return view('admin.employee_list', compact('users', 'query'));
+    }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function application_list()
+    {
+        $applications = LeaveApplication::join('users', 'leave_applications.user_id', '=', 'users.id')
+            ->select('leave_applications.*', 'users.name', 'leave_applications.id as leave_applications_id')
+            ->where('users.id', '!=', 1)
+            ->paginate(10);
+
+        return view('admin.application_list', compact('applications'));
+    }
+
 }
